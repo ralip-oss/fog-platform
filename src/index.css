@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-slate-950: #151618;
+  --color-slate-900: #1d1e21;
+  --color-slate-800: #28292d;
+  --color-slate-700: #383a40;
+  --color-slate-600: #505259;
+  --color-slate-500: #6f7178;
+  --color-slate-400: #9698a0;
+  --color-slate-300: #c0c2c8;
+  --color-slate-200: #e0e1e6;
+  --color-slate-100: #f0f1f4;
+  --color-slate-50: #f8f9fa;
+}
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #000000;
+    background-color: #f8f9fa;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, pre, kbd {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}

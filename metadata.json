@@ -1,0 +1,6 @@
+{
+  "name": "Steam CRO & Messaging Blueprint",
+  "description": "Modern, conversion-optimized landing page for Steam featuring high-converting hero architecture, audience personas, solution grid, and interactive 10+ FAQ.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
