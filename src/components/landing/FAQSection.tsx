@@ -134,12 +134,18 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ darkMode }) => {
                   </button>
 
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 mt-1">
+                    <div className={`px-5 pb-5 pt-2 text-xs sm:text-sm leading-relaxed border-t mt-1 ${
+                      darkMode ? 'text-slate-300 border-slate-800/60' : 'text-slate-900 border-slate-200'
+                    }`}>
                       <p className={darkMode ? 'text-slate-300' : 'text-black'}>
                         {faq.answer}
                       </p>
-                      <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-800/40">
-                        <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 bg-slate-800/60 px-2 py-0.5 rounded">
+                      <div className={`mt-3 flex items-center justify-between pt-2 border-t ${
+                        darkMode ? 'border-slate-800/40' : 'border-slate-200'
+                      }`}>
+                        <span className={`text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-1 rounded-md ${
+                          darkMode ? 'text-slate-200 bg-slate-800 border border-slate-700' : 'text-white bg-slate-800 shadow-xs'
+                        }`}>
                           {faq.category}
                         </span>
                       </div>

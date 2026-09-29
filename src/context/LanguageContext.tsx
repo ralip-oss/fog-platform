@@ -229,9 +229,9 @@ const translations: Record<Language, Translations> = {
     booking_open_cal: 'Abrir no Cal.com',
 
     // ChatBot
-    chat_title: 'Assistente Fog',
+    chat_title: 'Fogger',
     chat_subtitle: 'Apoio técnico & diagnóstico em segundos',
-    chat_welcome: 'Olá! Sou o assistente técnico do Fog. Posso ajudar-te com políticas de reembolso, Fog Deck, sincronização Cloud ou agendamento de reuniões. Em que posso ajudar?',
+    chat_welcome: 'Olá! Sou o Fogger, o teu assistente de suporte técnico. Posso ajudar-te com políticas de reembolso, Fog Deck, sincronização Cloud ou agendamento de reuniões. Em que posso ajudar?',
     chat_placeholder: 'Escreve a tua pergunta aqui...',
     chat_send: 'Enviar',
     chat_quick_q1: 'Como funciona o reembolso?',
@@ -357,9 +357,9 @@ const translations: Record<Language, Translations> = {
     booking_open_cal: 'Open in Cal.com',
 
     // ChatBot
-    chat_title: 'Fog Assistant',
+    chat_title: 'Fogger',
     chat_subtitle: 'Technical support & diagnostics in seconds',
-    chat_welcome: "Hello! I am Fog's official technical assistant. I can guide you through refund policies, Fog Deck verification, Cloud saves, or scheduling meetings. How can I help you?",
+    chat_welcome: "Hello! I am Fogger. I can guide you through refund policies, Fog Deck verification, Cloud saves, or scheduling meetings. How can I help you?",
     chat_placeholder: 'Type your question here...',
     chat_send: 'Send',
     chat_quick_q1: 'How do refunds work?',

@@ -47,8 +47,8 @@ export const SupportChatBot: React.FC<SupportChatBotProps> = ({
       id: 'welcome-msg',
       sender: 'bot',
       text: language === 'pt'
-        ? 'Olá! Sou o Assistente de Suporte Rápido do Fog. Como posso ajudar hoje? Pode colocar uma dúvida direta, relatar um problema técnico ou agendar uma reunião.'
-        : 'Hello! I am Fog Fast Support Assistant. How can I help today? Feel free to ask a direct question, report a technical issue, or schedule a meeting.',
+        ? 'Olá! Sou o Fogger. Como posso ajudar hoje? Pode colocar uma dúvida direta, relatar um problema técnico ou agendar uma reunião.'
+        : 'Hello! I am Fogger. How can I help today? Feel free to ask a direct question, report a technical issue, or schedule a meeting.',
       timestamp: language === 'pt' ? 'Agora' : 'Now',
     },
   ]);
@@ -239,13 +239,13 @@ export const SupportChatBot: React.FC<SupportChatBotProps> = ({
             }`}>
               <div className="flex items-center gap-2.5">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  darkMode ? 'bg-slate-800 border border-slate-700 text-slate-200' : 'bg-slate-200 border border-slate-300 text-black'
+                  darkMode ? 'bg-slate-800 border border-slate-700 text-sky-400' : 'bg-slate-200 border border-slate-300 text-sky-500'
                 }`}>
                   <Bot className="w-4 h-4" />
                 </div>
                 <div>
                   <h4 className={`text-xs font-bold leading-tight flex items-center gap-1.5 ${darkMode ? 'text-white' : 'text-black'}`}>
-                    <span>{language === 'pt' ? 'Suporte Técnico Fog' : 'Fog Tech Support'}</span>
+                    <span>{language === 'pt' ? 'Fogger • Suporte Técnico' : 'Fogger • Tech Support'}</span>
                     <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
                   </h4>
                   <span className={`text-[10px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getShowcaseGames } from '../../data/landingPageData';
 import { Star, MonitorCheck, Flame } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { getSentimentStarClass } from '../../utils/sentimentRank';
 
 interface InteractiveShowcaseProps {
   darkMode: boolean;
@@ -24,20 +25,22 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
 
   return (
     <section id="showcase" className={`py-16 md:py-24 transition-colors ${
-      darkMode ? 'bg-slate-950 text-white' : 'bg-white text-slate-900'
+      darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Section Heading & Filter Bar */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700">
-              <Flame className="w-3.5 h-3.5 text-amber-400" />
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+              darkMode ? 'bg-slate-800 text-slate-200 border-slate-700' : 'bg-white text-slate-800 border-slate-300 shadow-xs'
+            }`}>
+              <Flame className="w-3.5 h-3.5 text-amber-500" />
               <span>{language === 'pt' ? 'Catálogo em Destaque da Loja Fog' : 'Live Fog Store Catalog Spotlight'}</span>
             </div>
             <h2 className={`text-2xl sm:text-4xl font-black tracking-tight ${darkMode ? 'text-white' : 'text-black'}`}>
               {t.showcase_title}
             </h2>
-            <p className={`text-sm leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
               {t.showcase_subtitle}
             </p>
           </div>
@@ -50,10 +53,10 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
                 filter === 'all'
                   ? darkMode
                     ? 'bg-slate-800 text-white border border-slate-600 shadow-xs'
-                    : 'bg-slate-200 text-black border border-slate-400 shadow-xs'
+                    : 'bg-slate-900 text-white border border-slate-900 shadow-xs'
                   : darkMode
                   ? 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
-                  : 'bg-slate-100 text-slate-600 hover:text-black border border-slate-200'
+                  : 'bg-white text-slate-700 hover:text-black border border-slate-300'
               }`}
             >
               {t.showcase_all}
@@ -62,8 +65,12 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
               onClick={() => setFilter('verified')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 filter === 'verified'
-                  ? 'bg-slate-800 text-emerald-300 border border-emerald-500/50'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                  ? darkMode
+                    ? 'bg-slate-800 text-emerald-300 border border-emerald-500/50'
+                    : 'bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-xs'
+                  : darkMode
+                  ? 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                  : 'bg-white text-slate-700 hover:text-black border border-slate-300'
               }`}
             >
               {t.showcase_deck_verified}
@@ -72,8 +79,12 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
               onClick={() => setFilter('discounts')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 filter === 'discounts'
-                  ? 'bg-slate-800 text-amber-300 border border-amber-500/50'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                  ? darkMode
+                    ? 'bg-slate-800 text-amber-300 border border-amber-500/50'
+                    : 'bg-amber-100 text-amber-900 border border-amber-300 shadow-xs'
+                  : darkMode
+                  ? 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                  : 'bg-white text-slate-700 hover:text-black border border-slate-300'
               }`}
             >
               {t.showcase_specials}
@@ -89,7 +100,7 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
               className={`rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 ${
                 darkMode
                   ? 'bg-slate-900/80 border-slate-800 hover:border-slate-700 shadow-md hover:shadow-xl'
-                  : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-lg'
+                  : 'bg-white border-slate-300 hover:border-slate-400 shadow-sm hover:shadow-lg'
               }`}
             >
               {/* Image & Badges */}
@@ -120,33 +131,39 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
                   }`}>
                     {game.title}
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                  <p className={`text-[11px] mt-0.5 line-clamp-1 ${
+                    darkMode ? 'text-slate-400' : 'text-slate-600 font-medium'
+                  }`}>
                     {game.genre}
                   </p>
                 </div>
 
-                {/* Rating Info */}
+                {/* Rating Info with colored ranking star */}
                 <div className="flex items-center gap-1.5 text-xs">
-                  <Star className="w-3.5 h-3.5 fill-slate-200 text-slate-200 shrink-0" />
-                  <span className={`font-semibold text-[11px] ${darkMode ? 'text-slate-200' : 'text-black'}`}>
+                  <Star className={`w-3.5 h-3.5 shrink-0 ${getSentimentStarClass(game.reviewSentiment, darkMode)}`} />
+                  <span className={`font-bold text-[11px] ${darkMode ? 'text-slate-200' : 'text-black'}`}>
                     {game.reviewSentiment}
                   </span>
-                  <span className="text-slate-500 text-[10px]">
+                  <span className={`text-[10px] font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                     ({game.reviewPercentage}%)
                   </span>
                 </div>
 
                 {/* Pricing Capsule & Action */}
-                <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between">
+                <div className={`pt-2 border-t flex items-center justify-between ${
+                  darkMode ? 'border-slate-800/60' : 'border-slate-200'
+                }`}>
                   <div className="flex items-center gap-2">
                     <span className="bg-emerald-500 text-slate-950 font-black text-xs px-1.5 py-0.5 rounded font-mono">
                       {game.discount}
                     </span>
                     <div className="flex flex-col">
-                      <span className="text-[10px] line-through text-slate-500 font-mono leading-none">
+                      <span className={`text-[10px] line-through font-mono leading-none ${
+                        darkMode ? 'text-slate-500' : 'text-slate-600'
+                      }`}>
                         {game.originalPrice}
                       </span>
-                      <span className="text-sm font-black text-emerald-400 font-mono leading-tight">
+                      <span className="text-sm font-black text-emerald-500 dark:text-emerald-400 font-mono leading-tight">
                         {game.salePrice}
                       </span>
                     </div>
@@ -157,7 +174,7 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
                     className={`p-2 rounded-lg transition-colors cursor-pointer border ${
                       darkMode
                         ? 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700'
-                        : 'bg-slate-100 hover:bg-slate-200 text-black border-slate-300'
+                        : 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
                     }`}
                     title={t.showcase_buy_now}
                   >

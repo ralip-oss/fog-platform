@@ -67,7 +67,7 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
                   />
                   <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
                     <span>1 {language === 'pt' ? 'Dia' : 'Day'}</span>
-                    <span className="text-emerald-400 font-bold">14 {language === 'pt' ? 'Dias (Limite)' : 'Days (Limit)'}</span>
+                    <span className={`font-bold ${darkMode ? 'text-slate-200' : 'text-black'}`}>14 {language === 'pt' ? 'Dias (Limite)' : 'Days (Limit)'}</span>
                     <span>21 {language === 'pt' ? 'Dias' : 'Days'}</span>
                   </div>
                 </div>
@@ -75,10 +75,10 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
                 <div>
                   <div className="flex justify-between items-center text-xs font-bold mb-2">
                     <span className="flex items-center gap-1.5 text-slate-400">
-                      <Clock className="w-4 h-4 text-emerald-400" />
+                      <Clock className="w-4 h-4 text-sky-400" />
                       {t.simulator_hours_played}:
                     </span>
-                    <span className="font-mono text-sm font-extrabold text-emerald-400">
+                    <span className="font-mono text-sm font-extrabold text-sky-400">
                       {hoursPlayed.toFixed(1)} {language === 'pt' ? 'Horas' : 'Hours'} ({language === 'pt' ? 'Máx: 2.0h' : 'Max: 2.0h'})
                     </span>
                   </div>
@@ -89,11 +89,11 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
                     step="0.1"
                     value={hoursPlayed}
                     onChange={(e) => setHoursPlayed(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
                   />
                   <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
                     <span>0.0h</span>
-                    <span className="text-emerald-400 font-bold">2.0h ({language === 'pt' ? 'Limite Automático' : 'Auto Limit'})</span>
+                    <span className="text-sky-400 font-bold">2.0h ({language === 'pt' ? 'Limite Automático' : 'Auto Limit'})</span>
                     <span>5.0h</span>
                   </div>
                 </div>
@@ -117,9 +117,13 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
 
               {/* Status Outcome Card */}
               <div className={`p-6 rounded-2xl border text-center space-y-4 flex flex-col justify-center items-center transition-all ${
-                isEligible
-                  ? 'bg-emerald-950/20 border-emerald-500/40 text-emerald-300'
-                  : 'bg-amber-950/20 border-amber-500/40 text-amber-300'
+                darkMode
+                  ? isEligible
+                    ? 'bg-emerald-950/20 border-emerald-500/40 text-emerald-300'
+                    : 'bg-amber-950/20 border-amber-500/40 text-amber-300'
+                  : isEligible
+                  ? 'bg-slate-900 border-emerald-500/60 shadow-xl text-white'
+                  : 'bg-slate-900 border-amber-500/60 shadow-xl text-white'
               }`}>
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                   isEligible ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
@@ -128,13 +132,21 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
                 </div>
 
                 <div>
-                  <span className="text-xs uppercase font-mono font-bold tracking-widest block text-slate-400 mb-1">
+                  <span className={`text-xs uppercase font-mono font-bold tracking-widest block mb-1 ${
+                    darkMode ? 'text-slate-400' : 'text-white'
+                  }`}>
                     {language === 'pt' ? 'Resultado do Diagnóstico' : 'Diagnostic Outcome'}
                   </span>
-                  <h3 className="text-lg font-black leading-tight">
+                  <h3 className={`text-lg font-black leading-tight ${
+                    darkMode
+                      ? isEligible ? 'text-emerald-300' : 'text-amber-300'
+                      : 'text-white'
+                  }`}>
                     {isEligible ? t.simulator_status_approved : t.simulator_status_manual}
                   </h3>
-                  <p className="text-xs mt-2 text-slate-300 leading-relaxed max-w-xs">
+                  <p className={`text-xs mt-2 leading-relaxed max-w-xs ${
+                    darkMode ? 'text-slate-300' : 'text-white'
+                  }`}>
                     {isEligible ? t.simulator_eligible_msg : t.simulator_ineligible_msg}
                   </p>
                 </div>

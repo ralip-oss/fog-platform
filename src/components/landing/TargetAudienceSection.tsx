@@ -18,13 +18,13 @@ export const TargetAudienceSection: React.FC<TargetAudienceSectionProps> = ({
   const getPersonaIcon = (iconName: string) => {
     switch (iconName) {
       case 'Cpu':
-        return <Cpu className="w-6 h-6 text-slate-200" />;
+        return <Cpu className="w-6 h-6 text-sky-400" />;
       case 'Gamepad2':
         return <Gamepad2 className="w-6 h-6 text-emerald-400" />;
       case 'Sparkles':
         return <Sparkles className="w-6 h-6 text-amber-400" />;
       default:
-        return <Gamepad2 className="w-6 h-6 text-slate-200" />;
+        return <Gamepad2 className="w-6 h-6 text-sky-400" />;
     }
   };
 
@@ -75,7 +75,11 @@ export const TargetAudienceSection: React.FC<TargetAudienceSectionProps> = ({
                     <div className="w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center border border-slate-800 shadow-inner">
                       {getPersonaIcon(persona.iconName)}
                     </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                    <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                      persona.id === 'pc-purist'
+                        ? 'bg-sky-950/60 text-sky-300 border-sky-800/70'
+                        : 'bg-slate-800 text-slate-300 border border-slate-700'
+                    }`}>
                       {persona.badge}
                     </span>
                   </div>

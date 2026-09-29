@@ -17,7 +17,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
   const getFeatureIcon = (iconName: string) => {
     switch (iconName) {
       case 'Cloud':
-        return <Cloud className="w-6 h-6 text-slate-200" />;
+        return <Cloud className="w-6 h-6 text-sky-400" />;
       case 'MonitorPlay':
         return <MonitorPlay className="w-6 h-6 text-emerald-400" />;
       case 'Star':
@@ -27,7 +27,24 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
       case 'ShieldCheck':
         return <ShieldCheck className="w-6 h-6 text-rose-400" />;
       default:
-        return <Zap className="w-6 h-6 text-slate-200" />;
+        return <Zap className="w-6 h-6 text-sky-400" />;
+    }
+  };
+
+  const getMetricTagColor = (iconName: string) => {
+    switch (iconName) {
+      case 'Cloud':
+        return 'bg-sky-950/60 text-sky-400 border-sky-800/70';
+      case 'MonitorPlay':
+        return 'bg-emerald-950/60 text-emerald-400 border-emerald-800/70';
+      case 'Star':
+        return 'bg-amber-950/60 text-amber-400 border-amber-800/70';
+      case 'Wrench':
+        return 'bg-purple-950/60 text-purple-400 border-purple-800/70';
+      case 'ShieldCheck':
+        return 'bg-rose-950/60 text-rose-400 border-rose-800/70';
+      default:
+        return 'bg-sky-950/60 text-sky-400 border-sky-800/70';
     }
   };
 
@@ -68,7 +85,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
                   <div className="w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center border border-slate-800 shadow-inner group-hover:scale-110 transition-transform">
                     {getFeatureIcon(feature.iconName)}
                   </div>
-                  <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-200 border border-slate-700">
+                  <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${getMetricTagColor(feature.iconName)}`}>
                     {feature.metricTag}
                   </span>
                 </div>

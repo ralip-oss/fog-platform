@@ -102,14 +102,16 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Language Switcher: PT (PT-PT) vs EN */}
           <div className={`flex items-center rounded-lg p-0.5 border text-xs font-semibold ${
-            darkMode ? 'bg-slate-900 border-slate-700/70' : 'bg-slate-100 border-slate-200'
+            darkMode ? 'bg-slate-900 border-slate-700/70' : 'bg-slate-200 border-slate-300'
           }`}>
             <button
               onClick={() => setLanguage('pt')}
               className={`px-2 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
                 language === 'pt'
-                  ? 'bg-white text-slate-950 font-bold shadow-xs'
-                  : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
+                  ? darkMode
+                    ? 'bg-white text-slate-950 font-bold shadow-xs'
+                    : 'bg-slate-800 text-white font-bold shadow-xs'
+                  : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-black'
               }`}
               title="Português (PT-PT)"
             >
@@ -120,8 +122,10 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
               onClick={() => setLanguage('en')}
               className={`px-2 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
                 language === 'en'
-                  ? 'bg-white text-slate-950 font-bold shadow-xs'
-                  : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-slate-900'
+                  ? darkMode
+                    ? 'bg-white text-slate-950 font-bold shadow-xs'
+                    : 'bg-slate-800 text-white font-bold shadow-xs'
+                  : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-black'
               }`}
               title="English (EN)"
             >
@@ -192,24 +196,34 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
             })}
           </div>
 
-          <div className="pt-2 border-t border-slate-700/40 flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
-              <Languages className="w-3.5 h-3.5" />
+          <div className={`pt-2 border-t flex items-center justify-between ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+            <span className={`text-xs font-medium flex items-center gap-1.5 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+              <Languages className="w-3.5 h-3.5 text-sky-400" />
               Idioma / Language:
             </span>
-            <div className="flex items-center gap-1">
+            <div className={`flex items-center gap-1 p-0.5 rounded-lg border ${
+              darkMode ? 'bg-slate-900 border-slate-700' : 'bg-slate-200 border-slate-300'
+            }`}>
               <button
                 onClick={() => setLanguage('pt')}
-                className={`px-2.5 py-1 text-xs rounded-md font-bold ${
-                  language === 'pt' ? 'bg-white text-slate-900 font-bold shadow-xs' : 'text-slate-400'
+                className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${
+                  language === 'pt'
+                    ? darkMode
+                      ? 'bg-white text-slate-950 font-bold shadow-xs'
+                      : 'bg-slate-800 text-white font-bold shadow-xs'
+                    : darkMode ? 'text-slate-400' : 'text-slate-700'
                 }`}
               >
                 🇵🇹 PT
               </button>
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-2.5 py-1 text-xs rounded-md font-bold ${
-                  language === 'en' ? 'bg-white text-slate-900 font-bold shadow-xs' : 'text-slate-400'
+                className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${
+                  language === 'en'
+                    ? darkMode
+                      ? 'bg-white text-slate-950 font-bold shadow-xs'
+                      : 'bg-slate-800 text-white font-bold shadow-xs'
+                    : darkMode ? 'text-slate-400' : 'text-slate-700'
                 }`}
               >
                 🇬🇧 EN

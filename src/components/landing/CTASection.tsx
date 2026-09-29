@@ -66,29 +66,31 @@ export const CTASection: React.FC<CTASectionProps> = ({
               <button
                 id="cta-explore-catalog-secondary"
                 onClick={onExploreClick}
-                className={`w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 border cursor-pointer ${
+                className={`w-full sm:w-auto px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 border cursor-pointer ${
                   darkMode
-                    ? 'bg-slate-800/80 hover:bg-slate-800 text-white border-slate-700'
-                    : 'bg-white hover:bg-slate-100 text-black border-slate-300'
+                    ? 'bg-slate-800/80 hover:bg-slate-800 text-white border-slate-700 hover:border-slate-600'
+                    : 'bg-white hover:bg-slate-50 text-black border-slate-300 hover:border-slate-400'
                 }`}
               >
                 <span>{t.hero_secondary_cta}</span>
-                <ArrowRight className="w-4 h-4 text-slate-300" />
+                <ArrowRight className="w-4 h-4 text-sky-400" />
               </button>
             </div>
 
             {/* Guarantees list */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+            <div className={`pt-4 flex flex-wrap items-center justify-center gap-6 text-xs ${
+              darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'
+            }`}>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                 {t.cta_badge_free}
               </span>
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-slate-300" />
+                <ShieldCheck className={`w-4 h-4 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`} />
                 {t.cta_badge_refund}
               </span>
               <span className="flex items-center gap-1.5">
-                <Gamepad2 className="w-4 h-4 text-purple-400" />
+                <Gamepad2 className="w-4 h-4 text-sky-400" />
                 {t.cta_badge_crossplay}
               </span>
             </div>
