@@ -2,7 +2,7 @@ import React from 'react';
 import { Download, Moon, Sun, ShieldCheck, Menu, X, Languages } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
-export type LandingSection = 'main' | 'solutions' | 'guarantee' | 'faq' | 'agendamento';
+export type LandingSection = 'main' | 'solutions' | 'proposta' | 'guarantee' | 'faq' | 'agendamento';
 
 interface LandingNavbarProps {
   darkMode: boolean;
@@ -27,6 +27,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
   const navLinks: { id: LandingSection; label: string }[] = [
     { id: 'main', label: t.nav_main },
     { id: 'solutions', label: t.nav_solutions },
+    { id: 'proposta', label: language === 'pt' ? 'Pedido de Proposta' : 'Proposal Request' },
     { id: 'guarantee', label: t.nav_guarantee },
     { id: 'faq', label: t.nav_faq },
     { id: 'agendamento', label: t.nav_booking },
@@ -147,6 +148,20 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
           >
             {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
+
+          {/* Admin link */}
+          <a
+            href="/admin"
+            className={`p-2 rounded-lg text-xs transition-colors cursor-pointer border flex items-center gap-1.5 ${
+              darkMode
+                ? 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800'
+                : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-black hover:bg-slate-200'
+            }`}
+            title="Área de Administração"
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <span className="hidden xl:inline text-xs font-bold">Admin</span>
+          </a>
 
           {/* Primary High-Converting CTA Button */}
           <button

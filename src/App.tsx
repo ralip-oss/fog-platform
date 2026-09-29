@@ -16,6 +16,9 @@ import { MeetingScheduler } from './components/booking/MeetingScheduler';
 import { SupportChatBot } from './components/chat/SupportChatBot';
 import { LandingFooter } from './components/landing/LandingFooter';
 import { InstallModal } from './components/landing/InstallModal';
+import { ProposalRequestSection } from './components/landing/ProposalRequestSection';
+import { ProposalView } from './components/proposal/ProposalView';
+import { AdminView } from './components/admin/AdminView';
 
 // CRO Audit Components
 import { Header } from './components/Header';
@@ -49,6 +52,7 @@ export default function App() {
   const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
   const [landingSection, setLandingSection] = useState<LandingSection>('main');
+  const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname);
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('fog_theme_mode');
@@ -61,6 +65,20 @@ export default function App() {
   const [installModalOpen, setInstallModalOpen] = useState<boolean>(false);
   const [activeAuditTab, setActiveAuditTab] = useState<TabType>('sections');
   const [copied, setCopied] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (path: string) => {
+    window.history.pushState({}, '', path);
+    setCurrentPath(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   React.useEffect(() => {
     try {
@@ -76,6 +94,29 @@ export default function App() {
       document.body.style.color = '#000000';
     }
   }, [darkMode]);
+
+  // Rota 1: Área Privada de Administração (/admin)
+  if (currentPath === '/admin') {
+    return (
+      <AdminView
+        darkMode={darkMode}
+        onBackToHome={() => navigateTo('/')}
+      />
+    );
+  }
+
+  // Rota 2: Página Individual da Proposta (/proposta/[token])
+  if (currentPath.startsWith('/proposta/')) {
+    const token = currentPath.split('/proposta/')[1] || '';
+    return (
+      <ProposalView
+        token={token}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        onBackToHome={() => navigateTo('/')}
+      />
+    );
+  }
 
   const handleSelectSection = (section: LandingSection) => {
     setLandingSection(section);
@@ -170,6 +211,9 @@ export default function App() {
                   onInstallClick={() => setInstallModalOpen(true)}
                 />
 
+                {/* PEDIDO DE PROPOSTA COM IA */}
+                <ProposalRequestSection darkMode={darkMode} />
+
                 {/* RISK REVERSAL & REFUND POLICY SIMULATOR */}
                 <RefundSimulator
                   darkMode={darkMode}
@@ -200,6 +244,10 @@ export default function App() {
                   onInstallClick={() => setInstallModalOpen(true)}
                 />
               </div>
+            ) : landingSection === 'proposta' ? (
+              <div className="py-6">
+                <ProposalRequestSection darkMode={darkMode} />
+              </div>
             ) : landingSection === 'guarantee' ? (
               <div className="py-6 space-y-6">
                 <RefundSimulator
@@ -226,7 +274,7 @@ export default function App() {
             <SupportChatBot
               darkMode={darkMode}
               onNavigateToSection={(sectionId) => {
-                if (['solutions', 'guarantee', 'faq', 'agendamento', 'main'].includes(sectionId)) {
+                if (['solutions', 'proposta', 'guarantee', 'faq', 'agendamento', 'main'].includes(sectionId)) {
                   handleSelectSection(sectionId as LandingSection);
                 } else {
                   handleSelectSection('main');
