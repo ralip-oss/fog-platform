@@ -30,12 +30,14 @@ export const TargetAudienceSection: React.FC<TargetAudienceSectionProps> = ({
 
   return (
     <section id="audience" className={`py-16 md:py-24 border-t transition-colors ${
-      darkMode ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-50 border-slate-200'
+      darkMode ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-50 border-slate-300'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700">
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+            darkMode ? 'bg-slate-800 text-slate-200 border-slate-700' : 'bg-white text-slate-800 border-slate-300 shadow-xs'
+          }`}>
             <Shield className="w-3.5 h-3.5" />
             <span>{language === 'pt' ? 'Para o Teu Estilo de Jogo' : 'Tailored For Your Gaming Lifestyle'}</span>
           </div>
@@ -45,7 +47,7 @@ export const TargetAudienceSection: React.FC<TargetAudienceSectionProps> = ({
             {t.audience_title}
           </h2>
           <p className={`text-sm sm:text-base leading-relaxed ${
-            darkMode ? 'text-slate-400' : 'text-slate-600'
+            darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'
           }`}>
             {t.audience_subtitle}
           </p>
@@ -66,19 +68,21 @@ export const TargetAudienceSection: React.FC<TargetAudienceSectionProps> = ({
                       : 'bg-white border-slate-700 shadow-xl ring-1 ring-slate-400/30 -translate-y-1'
                     : darkMode
                     ? 'bg-slate-900/70 border-slate-800 hover:border-slate-700 hover:bg-slate-800/50'
-                    : 'bg-white/80 border-slate-200 hover:border-slate-300 hover:shadow-md'
+                    : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-md'
                 }`}
               >
                 <div className="space-y-4">
                   {/* Persona Header & Badge */}
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center border border-slate-800 shadow-inner">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center border shadow-inner ${
+                      darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-200 border-slate-300'
+                    }`}>
                       {getPersonaIcon(persona.iconName)}
                     </div>
                     <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
                       persona.id === 'pc-purist'
-                        ? 'bg-sky-950/60 text-sky-300 border-sky-800/70'
-                        : 'bg-slate-800 text-slate-300 border border-slate-700'
+                        ? darkMode ? 'bg-sky-950/60 text-sky-300 border-sky-800/70' : 'bg-sky-100 text-sky-800 border-sky-300'
+                        : darkMode ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-slate-200 text-slate-800 border-slate-300'
                     }`}>
                       {persona.badge}
                     </span>
@@ -92,7 +96,7 @@ export const TargetAudienceSection: React.FC<TargetAudienceSectionProps> = ({
                       {persona.role}
                     </h3>
                     <p className={`text-xs mt-1 leading-normal ${
-                      darkMode ? 'text-slate-400' : 'text-slate-500'
+                      darkMode ? 'text-slate-400' : 'text-slate-600 font-medium'
                     }`}>
                       {persona.tagline}
                     </p>

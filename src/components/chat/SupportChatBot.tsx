@@ -286,8 +286,10 @@ export const SupportChatBot: React.FC<SupportChatBotProps> = ({
                   className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.sender === 'bot' && (
-                    <div className="w-6 h-6 rounded-md bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 shrink-0 mt-0.5">
-                      <Bot className="w-3.5 h-3.5" />
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 border ${
+                      darkMode ? 'bg-slate-800 border-slate-700 text-sky-400' : 'bg-slate-200 border-slate-300 text-sky-500'
+                    }`}>
+                      <Bot className="w-4 h-4" />
                     </div>
                   )}
 
@@ -364,8 +366,10 @@ export const SupportChatBot: React.FC<SupportChatBotProps> = ({
 
               {isTyping && (
                 <div className="flex gap-2 items-center text-slate-400 text-xs py-1">
-                  <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center text-slate-200">
-                    <Bot className="w-3.5 h-3.5" />
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${
+                    darkMode ? 'bg-slate-800 border-slate-700 text-sky-400' : 'bg-slate-200 border-slate-300 text-sky-500'
+                  }`}>
+                    <Bot className="w-4 h-4" />
                   </div>
                   <div className="flex gap-1 items-center px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-slate-300 animate-bounce" />

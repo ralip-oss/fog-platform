@@ -21,10 +21,12 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
     <section id="guarantee" className={`py-16 md:py-24 border-y transition-colors ${
       darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto space-y-10">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl 2xl:max-w-5xl mx-auto space-y-10">
           <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+              darkMode ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800' : 'bg-emerald-100 text-emerald-900 border-emerald-300'
+            }`}>
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{language === 'pt' ? 'Política de Reembolso Sem Risco' : 'Ironclad Risk Reversal Policy'}</span>
             </div>
@@ -34,7 +36,7 @@ export const RefundSimulator: React.FC<RefundSimulatorProps> = ({
               {t.simulator_title}
             </h2>
             <p className={`text-sm sm:text-base leading-relaxed ${
-              darkMode ? 'text-slate-400' : 'text-slate-600'
+              darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'
             }`}>
               {t.simulator_subtitle}
             </p>

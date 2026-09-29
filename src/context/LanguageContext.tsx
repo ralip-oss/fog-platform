@@ -139,7 +139,7 @@ const translations: Record<Language, Translations> = {
     nav_guarantee: 'Garantia',
     nav_faq: 'FAQ',
     nav_booking: 'Agendamento',
-    nav_install: 'Instalar Fog',
+    nav_install: 'Instalar o Fog Agora',
     nav_back_to_main: 'Voltar ao Menu Principal',
 
     // Hero Section
@@ -267,7 +267,7 @@ const translations: Record<Language, Translations> = {
     nav_guarantee: 'Guarantee',
     nav_faq: 'FAQ',
     nav_booking: 'Booking',
-    nav_install: 'Install Fog',
+    nav_install: 'Install Fog Now',
     nav_back_to_main: 'Back to Main Menu',
 
     // Hero Section

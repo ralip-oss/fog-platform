@@ -49,10 +49,33 @@ export default function App() {
   const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
   const [landingSection, setLandingSection] = useState<LandingSection>('main');
-  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('fog_theme_mode');
+      if (saved !== null) {
+        return saved === 'dark';
+      }
+    } catch {}
+    return true;
+  });
   const [installModalOpen, setInstallModalOpen] = useState<boolean>(false);
   const [activeAuditTab, setActiveAuditTab] = useState<TabType>('sections');
   const [copied, setCopied] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('fog_theme_mode', darkMode ? 'dark' : 'light');
+    } catch {}
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      document.body.style.backgroundColor = '#151618';
+      document.body.style.color = '#ffffff';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.style.backgroundColor = '#e5e8ec';
+      document.body.style.color = '#000000';
+    }
+  }, [darkMode]);
 
   const handleSelectSection = (section: LandingSection) => {
     setLandingSection(section);
@@ -104,7 +127,7 @@ export default function App() {
               <div className={`border-b transition-colors ${
                 darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
               }`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-start">
+                <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-start">
                   <button
                     onClick={() => handleSelectSection('main')}
                     className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-sm group ${

@@ -35,12 +35,14 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ darkMode }) => {
 
   return (
     <section id="faq" className={`py-16 md:py-24 border-t transition-colors ${
-      darkMode ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200'
+      darkMode ? 'bg-slate-950 text-white border-slate-800' : 'bg-slate-50 text-slate-900 border-slate-300'
     }`}>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700">
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+            darkMode ? 'bg-slate-800 text-slate-200 border-slate-700' : 'bg-white text-slate-800 border-slate-300 shadow-xs'
+          }`}>
             <HelpCircle className="w-3.5 h-3.5" />
             <span>{language === 'pt' ? 'Respostas Transparentes & Sem Complicações' : 'Transparent & Frictionless Answers'}</span>
           </div>
@@ -48,7 +50,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ darkMode }) => {
             {t.faq_title}
           </h2>
           <p className={`text-sm sm:text-base max-w-2xl mx-auto ${
-            darkMode ? 'text-slate-400' : 'text-slate-600'
+            darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'
           }`}>
             {t.faq_subtitle}
           </p>
@@ -111,7 +113,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ darkMode }) => {
                         : 'bg-white border-slate-400 shadow-md ring-1 ring-slate-400/20'
                       : darkMode
                       ? 'bg-slate-900/40 border-slate-800/80 hover:border-slate-700'
-                      : 'bg-slate-50/80 border-slate-200 hover:border-slate-300'
+                      : 'bg-white border-slate-300 hover:border-slate-400'
                   }`}
                 >
                   <button
@@ -119,7 +121,9 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ darkMode }) => {
                     className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono font-bold text-slate-300">
+                      <span className={`text-xs font-mono font-bold ${
+                        darkMode ? 'text-slate-300' : 'text-slate-700'
+                      }`}>
                         {String(index + 1).padStart(2, '0')}.
                       </span>
                       <h3 className={`text-sm sm:text-base font-bold ${

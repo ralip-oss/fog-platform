@@ -93,10 +93,12 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
           : 'bg-slate-50 text-slate-900 border-slate-200'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-6xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Section Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+            darkMode ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800' : 'bg-emerald-100 text-emerald-900 border-emerald-300'
+          }`}>
             <CalendarCheck className="w-3.5 h-3.5" />
             <span>{language === 'pt' ? 'Agendamento Direto & Google Calendar' : 'Direct Booking & Google Calendar'}</span>
           </div>
@@ -105,7 +107,7 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
           </h2>
           <p
             className={`text-sm sm:text-base max-w-2xl mx-auto ${
-              darkMode ? 'text-slate-400' : 'text-slate-600'
+              darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'
             }`}
           >
             {t.booking_subtitle}
@@ -176,8 +178,12 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
         </div>
 
         {/* Tab Switcher & Cal.com link config */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b pb-4 max-w-4xl mx-auto border-slate-800">
-          <div className="flex items-center gap-2 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+        <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 border-b pb-4 max-w-4xl 2xl:max-w-5xl mx-auto ${
+          darkMode ? 'border-slate-800' : 'border-slate-300'
+        }`}>
+          <div className={`flex items-center gap-2 p-1 rounded-xl border ${
+            darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-slate-200 border-slate-300'
+          }`}>
             <button
               onClick={() => setActiveTab('calcom')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
@@ -187,7 +193,7 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
                     : 'bg-black text-white font-bold shadow-sm'
                   : darkMode
                   ? 'text-slate-400 hover:text-white'
-                  : 'text-slate-600 hover:text-black'
+                  : 'text-black hover:text-black font-bold'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -202,7 +208,7 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
                     : 'bg-black text-white font-bold shadow-sm'
                   : darkMode
                   ? 'text-slate-400 hover:text-white'
-                  : 'text-slate-600 hover:text-black'
+                  : 'text-black hover:text-black font-bold'
               }`}
             >
               <CheckCircle className="w-3.5 h-3.5" />

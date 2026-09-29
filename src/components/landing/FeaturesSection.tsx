@@ -31,31 +31,33 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
     }
   };
 
-  const getMetricTagColor = (iconName: string) => {
+  const getMetricTagColor = (iconName: string, isDark: boolean = true) => {
     switch (iconName) {
       case 'Cloud':
-        return 'bg-sky-950/60 text-sky-400 border-sky-800/70';
+        return isDark ? 'bg-sky-950/60 text-sky-400 border-sky-800/70' : 'bg-sky-100 text-sky-900 border-sky-300 font-bold';
       case 'MonitorPlay':
-        return 'bg-emerald-950/60 text-emerald-400 border-emerald-800/70';
+        return isDark ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800/70' : 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold';
       case 'Star':
-        return 'bg-amber-950/60 text-amber-400 border-amber-800/70';
+        return isDark ? 'bg-amber-950/60 text-amber-400 border-amber-800/70' : 'bg-amber-100 text-amber-900 border-amber-300 font-bold';
       case 'Wrench':
-        return 'bg-purple-950/60 text-purple-400 border-purple-800/70';
+        return isDark ? 'bg-purple-950/60 text-purple-400 border-purple-800/70' : 'bg-purple-100 text-purple-900 border-purple-300 font-bold';
       case 'ShieldCheck':
-        return 'bg-rose-950/60 text-rose-400 border-rose-800/70';
+        return isDark ? 'bg-rose-950/60 text-rose-400 border-rose-800/70' : 'bg-rose-100 text-rose-900 border-rose-300 font-bold';
       default:
-        return 'bg-sky-950/60 text-sky-400 border-sky-800/70';
+        return isDark ? 'bg-sky-950/60 text-sky-400 border-sky-800/70' : 'bg-sky-100 text-sky-900 border-sky-300 font-bold';
     }
   };
 
   return (
     <section id="solutions" className={`py-16 md:py-24 transition-colors ${
-      darkMode ? 'bg-slate-950 text-white' : 'bg-white text-black'
+      darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-black'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800">
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+            darkMode ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800' : 'bg-emerald-100 text-emerald-900 border-emerald-300'
+          }`}>
             <Zap className="w-3.5 h-3.5" />
             <span>{language === 'pt' ? 'Vantagens do Ecossistema Fog' : 'The Fog Ecosystem Advantage'}</span>
           </div>
@@ -63,7 +65,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
             {t.features_title}
           </h2>
           <p className={`text-sm sm:text-base leading-relaxed ${
-            darkMode ? 'text-slate-400' : 'text-slate-600'
+            darkMode ? 'text-slate-400' : 'text-slate-700 font-medium'
           }`}>
             {t.features_subtitle}
           </p>
@@ -77,22 +79,26 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
               className={`rounded-2xl p-6 border transition-all hover:-translate-y-1 flex flex-col justify-between group ${
                 darkMode
                   ? 'bg-slate-900/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900 shadow-lg'
-                  : 'bg-slate-50/80 border-slate-200 hover:border-slate-300 hover:bg-white hover:shadow-xl'
+                  : 'bg-white border-slate-300 hover:border-slate-400 hover:shadow-xl'
               } ${idx === 0 ? 'lg:col-span-2' : ''}`}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center border border-slate-800 shadow-inner group-hover:scale-110 transition-transform">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border shadow-inner group-hover:scale-110 transition-transform ${
+                    darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-200 border-slate-300'
+                  }`}>
                     {getFeatureIcon(feature.iconName)}
                   </div>
-                  <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${getMetricTagColor(feature.iconName)}`}>
+                  <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${getMetricTagColor(feature.iconName, darkMode)}`}>
                     {feature.metricTag}
                   </span>
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-widest">
+                    <span className={`text-xs font-mono font-bold uppercase tracking-widest ${
+                      darkMode ? 'text-slate-300' : 'text-slate-700'
+                    }`}>
                       {t.features_pillar} 0{idx + 1}
                     </span>
                   </div>
@@ -105,9 +111,9 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
 
                 {/* Outcome Benefit Highlight (Mandate: Focus on Outcome) */}
                 <div className={`p-3 rounded-xl border text-xs font-medium leading-relaxed ${
-                  darkMode ? 'bg-slate-950/70 border-slate-800 text-slate-200' : 'bg-white border-slate-200 text-black'
+                  darkMode ? 'bg-slate-950/70 border-slate-800 text-slate-200' : 'bg-slate-100 border-slate-300 text-black'
                 }`}>
-                  <span className="text-emerald-400 font-bold block mb-1">
+                  <span className="text-emerald-500 dark:text-emerald-400 font-bold block mb-1">
                     {language === 'pt' ? 'Resultado Direto:' : 'Direct Outcome:'}
                   </span>
                   {feature.benefit}

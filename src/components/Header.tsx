@@ -13,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({ onExportMarkdown, copied, darkMo
     <header className={`border-b sticky top-0 z-40 shadow-md transition-colors ${
       darkMode ? 'bg-slate-900 text-white border-slate-800' : 'bg-white text-black border-slate-200'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">

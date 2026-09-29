@@ -27,7 +27,7 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({
     <section id="showcase" className={`py-16 md:py-24 transition-colors ${
       darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Section Heading & Filter Bar */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div className="space-y-2 max-w-2xl">

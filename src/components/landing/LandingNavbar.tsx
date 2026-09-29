@@ -45,7 +45,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
         ? 'bg-slate-950/90 border-slate-800/80 text-white'
         : 'bg-white/95 border-slate-200 text-black'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">
           <button
@@ -150,11 +150,12 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
 
           {/* Primary High-Converting CTA Button */}
           <button
+            id="navbar-install-button"
             onClick={onInstallClick}
-            className="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-md hover:shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
+            className="px-3 sm:px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-md hover:shadow-emerald-500/20 flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0"
           >
-            <Download className="w-4 h-4" />
-            <span className="hidden xs:inline">{t.nav_install}</span>
+            <Download className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap font-bold">{language === 'pt' ? 'Instalar o Fog Agora' : 'Install Fog Now'}</span>
           </button>
 
           {/* Mobile hamburger menu */}

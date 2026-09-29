@@ -20,14 +20,18 @@ export const CTASection: React.FC<CTASectionProps> = ({
       {/* Glow background accent */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-slate-950 to-slate-900/60 pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`rounded-3xl p-8 sm:p-12 md:p-16 border text-center relative overflow-hidden shadow-2xl ${
           darkMode
             ? 'bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border-slate-800'
             : 'bg-gradient-to-b from-white via-slate-50 to-slate-100 border-slate-300'
         }`}>
-          {/* Subtle grid background pattern */}
-          <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+          {/* Distinct background dotted pattern - visible ash color in light theme */}
+          <div className={`absolute inset-0 pointer-events-none ${
+            darkMode
+              ? 'opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:20px_20px]'
+              : 'opacity-40 bg-[radial-gradient(#6f7380_2px,transparent_2px)] [background-size:20px_20px]'
+          }`} />
 
           <div className="max-w-3xl mx-auto space-y-6 relative z-10">
             {/* Tag */}

@@ -27,7 +27,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Background ambient lighting with subtle blue-fog tint */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-sky-500/10 via-slate-400/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Hero Copy: Strictly respecting Word Limits */}
         <div className="max-w-4xl mx-auto text-center space-y-4">
           {/* Main Headline: Exactly 9 words */}
@@ -102,7 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* Live Platform Metric Bar */}
-        <div className={`max-w-4xl mx-auto rounded-2xl p-4 sm:p-5 border transition-all ${
+        <div className={`max-w-4xl 2xl:max-w-5xl mx-auto rounded-2xl p-4 sm:p-5 border transition-all ${
           darkMode
             ? 'bg-slate-900/90 border-slate-800 shadow-xl'
             : 'bg-white border-slate-300 shadow-sm'
@@ -128,7 +128,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* Interactive Live Hero Showcase Capsule */}
-        <div className="max-w-5xl mx-auto pt-4">
+        <div className="max-w-5xl 2xl:max-w-6xl mx-auto pt-4">
           <div className={`rounded-2xl border overflow-hidden shadow-2xl transition-all ${
             darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-300'
           }`}>
