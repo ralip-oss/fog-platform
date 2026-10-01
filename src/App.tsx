@@ -100,6 +100,7 @@ export default function App() {
     return (
       <AdminView
         darkMode={darkMode}
+        setDarkMode={setDarkMode}
         onBackToHome={() => navigateTo('/')}
       />
     );
@@ -211,9 +212,6 @@ export default function App() {
                   onInstallClick={() => setInstallModalOpen(true)}
                 />
 
-                {/* PEDIDO DE PROPOSTA COM IA */}
-                <ProposalRequestSection darkMode={darkMode} />
-
                 {/* RISK REVERSAL & REFUND POLICY SIMULATOR */}
                 <RefundSimulator
                   darkMode={darkMode}
@@ -229,9 +227,6 @@ export default function App() {
 
                 {/* 5. FAQ SECTION: Perguntas Frequentes organizadas por categoria (dados em faqData.ts) */}
                 <FAQSection darkMode={darkMode} />
-
-                {/* 6. AGENDAMENTO DE REUNIÃO: Cal.com Embed + Formulário Rápido com Google Calendar */}
-                <MeetingScheduler darkMode={darkMode} />
               </>
             ) : landingSection === 'solutions' ? (
               <div className="py-6 space-y-6">
@@ -243,10 +238,6 @@ export default function App() {
                   darkMode={darkMode}
                   onInstallClick={() => setInstallModalOpen(true)}
                 />
-              </div>
-            ) : landingSection === 'proposta' ? (
-              <div className="py-6">
-                <ProposalRequestSection darkMode={darkMode} />
               </div>
             ) : landingSection === 'guarantee' ? (
               <div className="py-6 space-y-6">
@@ -264,6 +255,10 @@ export default function App() {
               <div className="py-6">
                 <FAQSection darkMode={darkMode} />
               </div>
+            ) : landingSection === 'proposta' ? (
+              <div className="py-6">
+                <ProposalRequestSection darkMode={darkMode} />
+              </div>
             ) : landingSection === 'agendamento' ? (
               <div className="py-6">
                 <MeetingScheduler darkMode={darkMode} />
@@ -274,8 +269,10 @@ export default function App() {
             <SupportChatBot
               darkMode={darkMode}
               onNavigateToSection={(sectionId) => {
-                if (['solutions', 'proposta', 'guarantee', 'faq', 'agendamento', 'main'].includes(sectionId)) {
+                if (['solutions', 'proposta', 'agendamento', 'guarantee', 'faq', 'main'].includes(sectionId)) {
                   handleSelectSection(sectionId as LandingSection);
+                } else if (sectionId === 'proposta_booking') {
+                  handleSelectSection('proposta');
                 } else {
                   handleSelectSection('main');
                   setTimeout(() => {

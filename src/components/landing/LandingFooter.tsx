@@ -77,17 +77,17 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({
         {/* Quick App Section Links */}
         <div className={`flex flex-wrap items-center gap-4 text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
           <span className={`font-semibold ${darkMode ? 'text-slate-400' : 'text-black'}`}>{language === 'pt' ? 'Secções:' : 'Sections:'}</span>
-          <button onClick={() => onSelectSection?.('main')} className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors cursor-pointer`}>{t.nav_main}</button>
+          <button onClick={() => onSelectSection?.('main')} className="hover:text-sky-300 transition-colors font-semibold text-sky-400 cursor-pointer">{t.nav_main}</button>
           <span>•</span>
           <button onClick={() => onSelectSection?.('solutions')} className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors cursor-pointer`}>{t.nav_solutions}</button>
           <span>•</span>
-          <button onClick={() => onSelectSection?.('proposta')} className="hover:text-sky-400 transition-colors font-semibold text-sky-400 cursor-pointer">{language === 'pt' ? 'Pedido de Proposta' : 'Proposal Request'}</button>
-          <span>•</span>
-          <button onClick={() => onSelectSection?.('guarantee')} className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors cursor-pointer`}>{t.nav_guarantee}</button>
+          <button onClick={() => onSelectSection?.('guarantee')} className="hover:text-sky-300 transition-colors font-semibold text-sky-400 cursor-pointer">{t.nav_guarantee}</button>
           <span>•</span>
           <button onClick={() => onSelectSection?.('faq')} className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors cursor-pointer`}>{t.nav_faq}</button>
           <span>•</span>
-          <button onClick={() => onSelectSection?.('agendamento')} className="hover:text-emerald-400 transition-colors font-semibold text-emerald-400 cursor-pointer">{t.nav_booking} (Cal.com)</button>
+          <button onClick={() => onSelectSection?.('proposta')} className="hover:text-sky-400 transition-colors font-semibold text-sky-400 cursor-pointer">{t.nav_proposal}</button>
+          <span>•</span>
+          <button onClick={() => onSelectSection?.('agendamento')} className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors cursor-pointer`}>{t.nav_booking}</button>
           <span>•</span>
           <a href="/admin" className="hover:text-emerald-400 transition-colors font-semibold text-emerald-400 flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5" />

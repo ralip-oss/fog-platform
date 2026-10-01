@@ -22,7 +22,8 @@ export const FAQ_CATEGORIES_PT = [
   'Reembolsos & Garantias',
   'Hardware & Fog Deck',
   'Jogos & Biblioteca',
-  'Agendamento & Suporte'
+  'Agendamento & Suporte',
+  'Pedidos de Proposta & IA'
 ] as const;
 
 export const FAQ_CATEGORIES_EN = [
@@ -31,7 +32,8 @@ export const FAQ_CATEGORIES_EN = [
   'Refunds & Guarantees',
   'Hardware & Fog Deck',
   'Games & Library',
-  'Booking & Support'
+  'Booking & Support',
+  'Proposal Requests & AI'
 ] as const;
 
 export const FAQ_ITEMS: FAQItemData[] = [
@@ -154,6 +156,46 @@ export const FAQ_ITEMS: FAQItemData[] = [
     answer_pt: 'O Fog inclui autenticação de dois fatores Fog Guard (via aplicação móvel iOS/Android ou e-mail), além de proteção automática de trocas e Valve Anti-Cheat (VAC) para garantir integridade e proteção contra acessos não autorizados.',
     answer_en: 'Fog includes Valve Anti-Cheat (VAC) to protect multiplayer integrity from hackers and Fog Guard two-factor authentication (via the Fog Mobile App on iOS/Android or email) to ensure no unauthorized user can log into your account.',
     tags: ['segurança', 'security', 'fog guard', '2fa', 'vac']
+  },
+  {
+    id: 'faq-13',
+    category_pt: 'Pedidos de Proposta & IA',
+    category_en: 'Proposal Requests & AI',
+    question_pt: 'Como funciona o pedido de proposta comercial inteligente com IA?',
+    question_en: 'How does the AI-powered commercial proposal request work?',
+    answer_pt: 'Aceda ao separador "Pedido de Proposta" na barra superior (ou utilize o assistente Fogger no chat flutuante para submeter sem sair do ecrã). Introduza o seu Nome, Email e descreva o que pretende (como unidades Fog Deck OLED, publicação de jogos, auditoria técnica Fog Verified ou pacotes de suporte). A nossa Inteligência Artificial analisa o pedido, efetua a correspondência com os itens ativos do catálogo oficial e calcula de imediato o orçamento discriminado sem IVA, com validade de 15 dias e link seguro.',
+    answer_en: 'Navigate to the "Proposal Request" tab in the top bar (or use the Fogger assistant in the floating chat to submit right away). Enter your Name, Email, and describe your requirements (such as Fog Deck OLED units, game publishing, Fog Verified technical audit, or studio support packages). Our Artificial Intelligence analyzes your text, matches it against active catalog items, and instantly calculates an itemized quote excluding VAT with 15-day validity and a secure link.',
+    tags: ['proposta', 'proposal', 'orçamento', 'ia', 'ai', 'preço', 'catalogo']
+  },
+  {
+    id: 'faq-14',
+    category_pt: 'Pedidos de Proposta & IA',
+    category_en: 'Proposal Requests & AI',
+    question_pt: 'O que significa quando uma proposta fica com o estado "Necessita de Revisão"?',
+    question_en: 'What does it mean when a proposal status is marked as "Needs Review"?',
+    answer_pt: 'Se o texto submetido contiver itens personalizados fora do catálogo regular, quantidades ambíguas ou requisitos técnicos que precisem de validação humana, o sistema classifica o pedido como "Necessita de Revisão". A nossa equipa administrativa revê os detalhes na área de gestão e emite a proposta ajustada sem custos adicionais.',
+    answer_en: 'If the submitted text contains custom services outside the standard catalog, ambiguous quantities, or requirements needing human confirmation, the system marks it as "Needs Review". Our administrative team reviews the submission in the management dashboard and issues the tailored proposal without extra charges.',
+    tags: ['revisão', 'review', 'manual', 'pendente', 'suporte']
+  },
+  {
+    id: 'faq-15',
+    category_pt: 'Pedidos de Proposta & IA',
+    category_en: 'Proposal Requests & AI',
+    question_pt: 'Como posso guardar, partilhar ou imprimir a proposta comercial gerada?',
+    question_en: 'How can I save, share, or print my generated commercial proposal?',
+    answer_pt: 'Cada proposta gerada recebe um link único protegido por token (exemplo: /proposta/[token]). Nessa página dedicada, pode consultar todos os subtotais e notas de conformidade, bem como clicar no botão "Imprimir / PDF" para descarregar o documento formatado.',
+    answer_en: 'Every generated proposal receives a unique token-secured link (example: /proposta/[token]). On that dedicated page, you can review all subtotals and compliance terms, or click the "Print / PDF" button to download a clean formatted document.',
+    tags: ['pdf', 'imprimir', 'token', 'link', 'partilha']
+  },
+  {
+    id: 'faq-16',
+    category_pt: 'Pedidos de Proposta & IA',
+    category_en: 'Proposal Requests & AI',
+    question_pt: 'O assistente Fogger pode ajudar-me a formular um pedido de proposta?',
+    question_en: 'Can the Fogger assistant help me formulate a proposal request?',
+    answer_pt: 'Sim. Pode perguntar diretamente ao Fogger no chat flutuante sobre produtos de hardware, custos de publicação ou opções de auditoria técnica. O assistente indica os detalhes recomendados a incluir e encaminha-o com um clique para o formulário de proposta.',
+    answer_en: 'Yes. You can ask Fogger directly in the floating chat about hardware products, publishing costs, or technical audit packages. The assistant advises which details to include and directs you to the proposal form with one click.',
+    tags: ['chatbot', 'fogger', 'ajuda proposta', 'assistente comercial']
   }
 ];
 

@@ -8,7 +8,7 @@
 
 export interface TroubleshootingEntry {
   problemId: string;
-  category: 'Instalação & Downloads' | 'Fog Cloud & Gravações' | 'Comandos & Hardware' | 'Reembolsos & Finanças' | 'Desempenho & Arranque' | 'Agendamento & Reuniões' | 'Conta & Segurança';
+  category: 'Instalação & Downloads' | 'Fog Cloud & Gravações' | 'Comandos & Hardware' | 'Reembolsos & Finanças' | 'Desempenho & Arranque' | 'Agendamento & Reuniões' | 'Conta & Segurança' | 'Orçamentação & Propostas';
   title: string;
   symptoms: string[];
   quickDiagnosis: string;
@@ -16,7 +16,7 @@ export interface TroubleshootingEntry {
   actionSuggestion?: {
     label: string;
     targetSection?: string;
-    actionType?: 'schedule_meeting' | 'open_faq' | 'install_client' | 'refund_calc';
+    actionType?: 'schedule_meeting' | 'open_faq' | 'install_client' | 'refund_calc' | 'proposal_request';
   };
   notes?: string;
 }
@@ -188,6 +188,71 @@ export const INTERNAL_TROUBLESHOOTING_GUIDE: TroubleshootingEntry[] = [
     ],
     actionSuggestion: {
       label: 'Mais Informações de Segurança na FAQ',
+      targetSection: 'faq',
+      actionType: 'open_faq'
+    }
+  },
+  {
+    problemId: 'trouble-proposal-request-workflow',
+    category: 'Orçamentação & Propostas',
+    title: 'Como Criar ou Resolver Dúvidas no Pedido de Proposta com IA',
+    symptoms: [
+      'proposta', 'pedir proposta', 'orçamento', 'orcamento', 'quanto custa', 'publicar jogo',
+      'custo fog deck', 'proposta com ia', 'erro ao pedir proposta', 'proposta token',
+      'proposal', 'quote', 'request proposal', 'proposal request', 'pricing'
+    ],
+    quickDiagnosis: 'O utilizador pretende orçamentar produtos ou serviços do ecossistema Fog (Fog Deck, publicação, auditoria técnica ou suporte a estúdios) ou esclarecer o fluxo de cálculo.',
+    stepByStepSolution: [
+      'Aceda ao separador "Pedido de Proposta" na barra superior (ou requisite assistência no chat ao Fogger).',
+      'Preencha o Nome, Email de contacto e a descrição detalhada do pedido (mínimo de 8 caracteres).',
+      'Indique com clareza as quantidades pretendidas (exemplo: 2 consolas Fog Deck, 1 publicação e 3 meses de suporte a estúdio).',
+      'Ao submeter, a IA mapeia os itens ao catálogo oficial e calcula os valores líquidos em Euros sem IVA com validade de 15 dias.',
+      'Clique em "Ver Proposta Gerada" para consultar a discriminação completa e imprimir ou guardar em formato PDF.'
+    ],
+    actionSuggestion: {
+      label: 'Aceder a Pedido de Proposta',
+      targetSection: 'proposta',
+      actionType: 'proposal_request'
+    }
+  },
+  {
+    problemId: 'trouble-proposal-validation-errors',
+    category: 'Orçamentação & Propostas',
+    title: 'Erro de Validação na Submissão do Pedido de Proposta',
+    symptoms: [
+      'erro na submissao', 'minimo 8 caracteres', 'email invalido', 'nome obrigatorio',
+      'proposta rejeitada', 'submission error', 'invalid email format', 'invalid proposal'
+    ],
+    quickDiagnosis: 'Geralmente ocorre quando o campo da proposta tem menos de 8 caracteres, o e-mail não cumpre a sintaxe correta ou o nome está vazio.',
+    stepByStepSolution: [
+      'Verifique se o campo do Nome está devidamente preenchido.',
+      'Confirme que o endereço de e-mail segue o formato padrão nome@dominio.com sem espaços extras.',
+      'No campo do pedido, descreva o contexto e os serviços pretendidos com pelo menos 8 caracteres explicativos.',
+      'Se necessitar de um esclarecimento personalizado antes de pedir a proposta, agende uma sessão de 30 minutos com a nossa equipa no Cal.com.'
+    ],
+    actionSuggestion: {
+      label: 'Agendar Reunião Técnica (Cal.com)',
+      targetSection: 'agendamento',
+      actionType: 'schedule_meeting'
+    }
+  },
+  {
+    problemId: 'trouble-proposal-needs-review',
+    category: 'Orçamentação & Propostas',
+    title: 'Pedido de Proposta com Estado "Necessita de Revisão"',
+    symptoms: [
+      'necessita de revisao', 'proposta em analise', 'revisao manual', 'por que nao recebi proposta',
+      'needs review', 'pending proposal review'
+    ],
+    quickDiagnosis: 'Ocorre quando o pedido submetido inclui serviços à medida, itens não identificados de imediato no catálogo ou quantidades omissas.',
+    stepByStepSolution: [
+      'O sistema regista o pedido na base de dados com a nota de revisão detalhada.',
+      'A equipa administrativa analisa o texto original no painel de administração e valida as condições técnicas.',
+      'O administrador orçamenta manualmente os itens adequados e aprova a proposta.',
+      'A proposta fica disponível na mesma ligação protegida por token, refletindo os valores atualizados.'
+    ],
+    actionSuggestion: {
+      label: 'Consultar FAQ sobre Propostas',
       targetSection: 'faq',
       actionType: 'open_faq'
     }

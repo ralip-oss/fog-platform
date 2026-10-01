@@ -2,7 +2,7 @@ import React from 'react';
 import { Download, Moon, Sun, ShieldCheck, Menu, X, Languages } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
-export type LandingSection = 'main' | 'solutions' | 'proposta' | 'guarantee' | 'faq' | 'agendamento';
+export type LandingSection = 'main' | 'solutions' | 'guarantee' | 'faq' | 'proposta' | 'agendamento';
 
 interface LandingNavbarProps {
   darkMode: boolean;
@@ -27,9 +27,9 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
   const navLinks: { id: LandingSection; label: string }[] = [
     { id: 'main', label: t.nav_main },
     { id: 'solutions', label: t.nav_solutions },
-    { id: 'proposta', label: language === 'pt' ? 'Pedido de Proposta' : 'Proposal Request' },
     { id: 'guarantee', label: t.nav_guarantee },
     { id: 'faq', label: t.nav_faq },
+    { id: 'proposta', label: t.nav_proposal },
     { id: 'agendamento', label: t.nav_booking },
   ];
 

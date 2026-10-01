@@ -8,7 +8,9 @@ export interface Translations {
   nav_solutions: string;
   nav_guarantee: string;
   nav_faq: string;
+  nav_proposal: string;
   nav_booking: string;
+  nav_proposal_booking: string;
   nav_install: string;
   nav_back_to_main: string;
   
@@ -129,6 +131,34 @@ export interface Translations {
   install_modal_mac: string;
   install_modal_linux: string;
   install_modal_installer_info: string;
+
+  // Proposal Request
+  proposal_badge: string;
+  proposal_title: string;
+  proposal_subtitle: string;
+  proposal_name_label: string;
+  proposal_name_placeholder: string;
+  proposal_email_label: string;
+  proposal_email_placeholder: string;
+  proposal_request_label: string;
+  proposal_request_placeholder: string;
+  proposal_min_chars: string;
+  proposal_characters: string;
+  proposal_privacy_note: string;
+  proposal_submit_btn: string;
+  proposal_submitting_btn: string;
+  proposal_success_title: string;
+  proposal_success_desc: string;
+  proposal_reference: string;
+  proposal_view_btn: string;
+  proposal_submit_another: string;
+  proposal_err_title: string;
+  proposal_err_name: string;
+  proposal_err_email: string;
+  proposal_err_email_invalid: string;
+  proposal_err_request: string;
+  proposal_err_short: string;
+  proposal_err_generic: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -138,7 +168,9 @@ const translations: Record<Language, Translations> = {
     nav_solutions: 'Soluções',
     nav_guarantee: 'Garantia',
     nav_faq: 'FAQ',
+    nav_proposal: 'Pedido de Proposta',
     nav_booking: 'Agendamento',
+    nav_proposal_booking: 'Pedido de Proposta e Agendamento',
     nav_install: 'Instalar o Fog Agora',
     nav_back_to_main: 'Voltar ao Menu Principal',
 
@@ -258,7 +290,35 @@ const translations: Record<Language, Translations> = {
     install_modal_windows: 'Descarregar para Windows',
     install_modal_mac: 'Descarregar para macOS',
     install_modal_linux: 'Descarregar para Linux / FogOS',
-    install_modal_installer_info: 'Instalador oficial verificado da Valve Corporation'
+    install_modal_installer_info: 'Instalador oficial verificado da Valve Corporation',
+
+    // Proposal Request
+    proposal_badge: 'Orçamentação Inteligente com IA',
+    proposal_title: 'Pedido de proposta',
+    proposal_subtitle: 'Indique as suas necessidades de hardware Fog Deck, publicação na plataforma, certificação técnica ou servidores dedicados. A nossa Inteligência Artificial analisa o seu pedido e calcula a proposta instantaneamente com base no catálogo oficial.',
+    proposal_name_label: 'Nome',
+    proposal_name_placeholder: 'O seu nome ou da sua empresa',
+    proposal_email_label: 'Email',
+    proposal_email_placeholder: 'exemplo@dominio.com',
+    proposal_request_label: 'Pedido',
+    proposal_request_placeholder: 'Ex.: Gostaríamos de publicar 2 jogos independentes na Fog com auditoria técnica Fog Verified para cada um, e incluir 3 meses de suporte dedicado a estúdios.',
+    proposal_min_chars: 'Mínimo 8 caracteres',
+    proposal_characters: 'caracteres',
+    proposal_privacy_note: 'Os seus dados serão utilizados exclusivamente para analisar e responder ao seu pedido com base nos serviços do ecossistema Fog.',
+    proposal_submit_btn: 'Pedir proposta',
+    proposal_submitting_btn: 'A analisar pedido com IA...',
+    proposal_success_title: 'O seu pedido foi recebido com sucesso.',
+    proposal_success_desc: 'O nosso sistema registou o seu pedido na base de dados e iniciou o processamento comercial com os preços do catálogo.',
+    proposal_reference: 'Referência:',
+    proposal_view_btn: 'Ver Proposta Gerada',
+    proposal_submit_another: 'Submeter outro pedido',
+    proposal_err_title: 'Erro na submissão:',
+    proposal_err_name: 'Por favor, indique o seu nome.',
+    proposal_err_email: 'Por favor, indique o seu email.',
+    proposal_err_email_invalid: 'Por favor, introduza um endereço de email com formato válido.',
+    proposal_err_request: 'Por favor, descreva o seu pedido com detalhe.',
+    proposal_err_short: 'O pedido é demasiado curto. Por favor, forneça mais contexto.',
+    proposal_err_generic: 'Não foi possível enviar o seu pedido neste momento. Tente novamente.'
   },
   en: {
     // Navigation
@@ -266,7 +326,9 @@ const translations: Record<Language, Translations> = {
     nav_solutions: 'Solutions',
     nav_guarantee: 'Guarantee',
     nav_faq: 'FAQ',
+    nav_proposal: 'Proposal Request',
     nav_booking: 'Booking',
+    nav_proposal_booking: 'Proposal Request and Booking',
     nav_install: 'Install Fog Now',
     nav_back_to_main: 'Back to Main Menu',
 
@@ -386,7 +448,35 @@ const translations: Record<Language, Translations> = {
     install_modal_windows: 'Download for Windows',
     install_modal_mac: 'Download for macOS',
     install_modal_linux: 'Download for Linux / FogOS',
-    install_modal_installer_info: 'Official verified installer from Valve Corporation'
+    install_modal_installer_info: 'Official verified installer from Valve Corporation',
+
+    // Proposal Request
+    proposal_badge: 'AI-Powered Proposal Requests',
+    proposal_title: 'Request a Proposal',
+    proposal_subtitle: 'Specify your needs for Fog Deck hardware, platform publishing, technical certification, or dedicated servers. Our Artificial Intelligence analyzes your request and calculates the proposal instantly based on the official catalog.',
+    proposal_name_label: 'Name',
+    proposal_name_placeholder: 'Your name or company name',
+    proposal_email_label: 'Email',
+    proposal_email_placeholder: 'example@domain.com',
+    proposal_request_label: 'Request',
+    proposal_request_placeholder: 'E.g.: We would like to publish 2 indie games on Fog with Fog Verified technical audit for each, and include 3 months of dedicated studio support.',
+    proposal_min_chars: 'Minimum 8 characters',
+    proposal_characters: 'characters',
+    proposal_privacy_note: 'Your data will be used exclusively to analyze and respond to your request based on Fog ecosystem services.',
+    proposal_submit_btn: 'Request proposal',
+    proposal_submitting_btn: 'Analyzing request with AI...',
+    proposal_success_title: 'Your request has been successfully received.',
+    proposal_success_desc: 'Our system has recorded your request in the database and started commercial processing using catalog prices.',
+    proposal_reference: 'Reference:',
+    proposal_view_btn: 'View Generated Proposal',
+    proposal_submit_another: 'Submit another request',
+    proposal_err_title: 'Submission error:',
+    proposal_err_name: 'Please enter your name.',
+    proposal_err_email: 'Please enter your email.',
+    proposal_err_email_invalid: 'Please enter a valid email address.',
+    proposal_err_request: 'Please describe your request in detail.',
+    proposal_err_short: 'Request description is too short. Please provide more details.',
+    proposal_err_generic: 'Could not submit your request at this time. Please try again.'
   }
 };
 

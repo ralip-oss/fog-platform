@@ -192,8 +192,8 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
                     ? 'bg-white text-black font-bold shadow-sm'
                     : 'bg-black text-white font-bold shadow-sm'
                   : darkMode
-                  ? 'text-slate-400 hover:text-white'
-                  : 'text-black hover:text-black font-bold'
+                  ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-black hover:text-white hover:bg-black'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -207,8 +207,8 @@ export const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({ darkMode }) 
                     ? 'bg-white text-black font-bold shadow-sm'
                     : 'bg-black text-white font-bold shadow-sm'
                   : darkMode
-                  ? 'text-slate-400 hover:text-white'
-                  : 'text-black hover:text-black font-bold'
+                  ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-black hover:text-white hover:bg-black'
               }`}
             >
               <CheckCircle className="w-3.5 h-3.5" />

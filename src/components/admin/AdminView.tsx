@@ -26,7 +26,10 @@ import {
   ArrowLeft,
   X,
   Check,
+  Sun,
+  Moon,
 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface PedidoAdmin {
   id: string;
@@ -64,10 +67,12 @@ interface CatalogoItemAdmin {
 
 interface AdminViewProps {
   darkMode: boolean;
+  setDarkMode?: (val: boolean) => void;
   onBackToHome: () => void;
 }
 
-export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) => {
+export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onBackToHome }) => {
+  const { language, setLanguage } = useLanguage();
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -330,32 +335,32 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
     switch (estado) {
       case 'proposta_criada':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
-            <CheckCircle2 className="w-3 h-3" /> Proposta Criada
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-500 border border-sky-500/30">
+            <CheckCircle2 className="w-3 h-3" /> {language === 'pt' ? 'Proposta Criada' : 'Proposal Created'}
           </span>
         );
       case 'necessita_revisao':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/30">
-            <AlertCircle className="w-3 h-3" /> Necessita de Revisão
+            <AlertCircle className="w-3 h-3" /> {language === 'pt' ? 'Necessita de Revisão' : 'Needs Review'}
           </span>
         );
       case 'em_analise':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/30">
-            <Clock className="w-3 h-3 animate-spin" /> Em Análise
+            <Clock className="w-3 h-3 animate-spin" /> {language === 'pt' ? 'Em Análise' : 'In Analysis'}
           </span>
         );
       case 'erro':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/30">
-            <AlertCircle className="w-3 h-3" /> Erro
+            <AlertCircle className="w-3 h-3" /> {language === 'pt' ? 'Erro' : 'Error'}
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/30">
-            Recebido
+            {language === 'pt' ? 'Recebido' : 'Received'}
           </span>
         );
     }
@@ -366,25 +371,25 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
       case 'aceite':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-500">
-            <Check className="w-3 h-3" /> Aceite pelo serviço
+            <Check className="w-3 h-3" /> {language === 'pt' ? 'Aceite pelo serviço' : 'Accepted by service'}
           </span>
         );
       case 'falhou':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-500">
-            <AlertCircle className="w-3 h-3" /> Falhou
+            <AlertCircle className="w-3 h-3" /> {language === 'pt' ? 'Falhou' : 'Failed'}
           </span>
         );
       case 'nao_configurado':
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-500">
-            <Info className="w-3 h-3" /> Não configurado
+            <Info className="w-3 h-3" /> {language === 'pt' ? 'Não configurado' : 'Not configured'}
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-            Por enviar
+            {language === 'pt' ? 'Por enviar' : 'Pending'}
           </span>
         );
     }
@@ -392,7 +397,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
 
   const formatEuro = (centimos?: number) => {
     if (centimos === undefined || centimos === null) return '—';
-    return (centimos / 100).toLocaleString('pt-PT', {
+    return (centimos / 100).toLocaleString(language === 'pt' ? 'pt-PT' : 'en-GB', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 2,
@@ -420,26 +425,76 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                   ? 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white'
                   : 'bg-slate-100 border-slate-300 text-slate-700 hover:text-black'
               }`}
-              title="Voltar ao Website"
+              title={language === 'pt' ? 'Voltar ao Website' : 'Back to Website'}
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs">
+              <div className="w-7 h-7 rounded-lg bg-sky-600 flex items-center justify-center text-white font-bold text-xs">
                 F
               </div>
               <div>
                 <span className="font-extrabold text-sm sm:text-base leading-none block">
-                  Fog • Administração
+                  {language === 'pt' ? 'Fog • Administração' : 'Fog • Administration'}
                 </span>
                 <span className="text-[10px] text-slate-400 font-mono">
-                  Gestão Comercial & IA
+                  {language === 'pt' ? 'Gestão Comercial & IA' : 'Commercial & AI Management'}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language Switcher: PT vs EN */}
+            <div className={`flex items-center rounded-lg p-0.5 border text-xs font-semibold ${
+              darkMode ? 'bg-slate-900 border-slate-700/70' : 'bg-slate-200 border-slate-300'
+            }`}>
+              <button
+                onClick={() => setLanguage('pt')}
+                className={`px-2 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                  language === 'pt'
+                    ? darkMode
+                      ? 'bg-white text-slate-950 font-bold shadow-xs'
+                      : 'bg-slate-800 text-white font-bold shadow-xs'
+                    : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-black'
+                }`}
+                title="Português (PT-PT)"
+              >
+                <span>🇵🇹</span>
+                <span className="hidden sm:inline">PT</span>
+              </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-2 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                  language === 'en'
+                    ? darkMode
+                      ? 'bg-white text-slate-950 font-bold shadow-xs'
+                      : 'bg-slate-800 text-white font-bold shadow-xs'
+                    : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-600 hover:text-black'
+                }`}
+                title="English (EN)"
+              >
+                <span>🇬🇧</span>
+                <span className="hidden sm:inline">EN</span>
+              </button>
+            </div>
+
+            {/* Dark / Light Theme Toggle Button */}
+            {setDarkMode && (
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`p-2 rounded-lg text-xs transition-colors cursor-pointer border ${
+                  darkMode
+                    ? 'bg-slate-900 border-slate-700/70 text-amber-300 hover:bg-slate-800'
+                    : 'bg-slate-200 border-slate-300 text-slate-700 hover:bg-slate-300'
+                }`}
+                title={language === 'pt' ? 'Alternar tema claro/escuro' : 'Toggle light/dark theme'}
+                aria-label="Alternar tema"
+              >
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+            )}
+
             {currentUser ? (
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
@@ -459,7 +514,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                   }`}
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Sair</span>
+                  <span>{language === 'pt' ? 'Sair' : 'Sign out'}</span>
                 </button>
               </div>
             ) : null}
@@ -472,8 +527,10 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
         {/* Caso 1: Não autenticado ou Carregando */}
         {authLoading ? (
           <div className="py-24 text-center space-y-4">
-            <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm text-slate-400">A verificar sessão de administrador...</p>
+            <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-sm text-slate-400">
+              {language === 'pt' ? 'A verificar sessão de administrador...' : 'Checking administrator session...'}
+            </p>
           </div>
         ) : !currentUser ? (
           <div
@@ -481,14 +538,18 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-300'
             }`}
           >
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 border border-sky-500/20 flex items-center justify-center mx-auto">
               <ShieldCheck className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold">Área de Administração</h2>
+              <h2 className="text-2xl font-bold">
+                {language === 'pt' ? 'Área de Administração' : 'Administration Area'}
+              </h2>
               <p className="text-xs sm:text-sm text-slate-500">
-                Acesso restrito para consulta e orçamentação de pedidos com Inteligência Artificial.
+                {language === 'pt'
+                  ? 'Acesso restrito para consulta e orçamentação de pedidos com Inteligência Artificial.'
+                  : 'Restricted access for reviewing and quoting requests with Artificial Intelligence.'}
               </p>
             </div>
 
@@ -497,7 +558,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               className="w-full py-3.5 px-5 rounded-xl font-bold text-sm bg-slate-900 dark:bg-white text-white dark:text-black hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
             >
               <LogIn className="w-4 h-4" />
-              <span>Entrar com Conta Google</span>
+              <span>{language === 'pt' ? 'Entrar com Conta Google' : 'Sign in with Google Account'}</span>
             </button>
           </div>
         ) : !isAuthorized ? (
@@ -512,9 +573,13 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
             </div>
 
             <div className="text-center space-y-2">
-              <h2 className="text-xl sm:text-2xl font-bold">Autorização Pendente</h2>
+              <h2 className="text-xl sm:text-2xl font-bold">
+                {language === 'pt' ? 'Autorização Pendente' : 'Pending Authorization'}
+              </h2>
               <p className="text-xs sm:text-sm text-slate-500">
-                O seu login com a conta Google foi concluído com sucesso, mas o seu utilizador ainda não tem privilégios de administrador atribuídos.
+                {language === 'pt'
+                  ? 'O seu login com a conta Google foi concluído com sucesso, mas o seu utilizador ainda não tem privilégios de administrador atribuídos.'
+                  : 'Your Google sign-in succeeded, but your account does not have administrator privileges assigned yet.'}
               </p>
             </div>
 
@@ -524,13 +589,15 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               }`}
             >
               <strong className="block text-slate-300 font-bold uppercase tracking-wider">
-                O seu UID Firebase é:
+                {language === 'pt' ? 'O seu UID Firebase é:' : 'Your Firebase UID is:'}
               </strong>
-              <div className="font-mono text-sm font-bold text-emerald-400 select-all p-2 bg-black/40 rounded-lg border border-slate-700">
+              <div className="font-mono text-sm font-bold text-sky-400 select-all p-2 bg-black/40 rounded-lg border border-slate-700">
                 {userUid}
               </div>
               <p className="text-slate-400 pt-1">
-                Para ter acesso, adicione este identificador como variável de ambiente no Secrets do AI Studio:
+                {language === 'pt'
+                  ? 'Para ter acesso, adicione este identificador como variável de ambiente no Secrets do AI Studio:'
+                  : 'To gain access, add this identifier as an environment variable in AI Studio Secrets:'}
                 <br />
                 <code className="text-sky-400 font-mono">ADMIN_UID="{userUid}"</code>
               </p>
@@ -539,15 +606,15 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
             <div className="flex justify-center gap-3">
               <button
                 onClick={() => verifyAdminStatus(currentUser)}
-                className="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-xl font-bold text-xs bg-sky-600 hover:bg-sky-500 text-white transition-all cursor-pointer"
               >
-                Verificar Novamente
+                {language === 'pt' ? 'Verificar Novamente' : 'Verify Again'}
               </button>
               <button
                 onClick={handleLogout}
                 className="px-5 py-2.5 rounded-xl font-bold text-xs border border-slate-600 hover:bg-slate-800 text-slate-300 transition-all cursor-pointer"
               >
-                Terminar Sessão
+                {language === 'pt' ? 'Terminar Sessão' : 'Sign Out'}
               </button>
             </div>
           </div>
@@ -559,7 +626,10 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               <div className="flex items-center gap-3">
                 <Info className="w-5 h-5 text-sky-400 shrink-0" />
                 <span>
-                  <strong>Modo de aula:</strong> as notificações são enviadas apenas para o email do aluno. Os clientes não recebem emails.
+                  <strong>{language === 'pt' ? 'Modo de aula:' : 'Class mode:'}</strong>{' '}
+                  {language === 'pt'
+                    ? 'as notificações são enviadas apenas para o email do aluno. Os clientes não recebem emails.'
+                    : 'notifications are sent only to the student\'s email. Customers do not receive emails.'}
                 </span>
               </div>
               <button
@@ -568,7 +638,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                 className="px-3 py-1.5 rounded-lg font-bold text-xs bg-sky-900/60 hover:bg-sky-800 border border-sky-700 text-white flex items-center gap-1.5 cursor-pointer shrink-0"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? 'animate-spin' : ''}`} />
-                <span className="hidden sm:inline">Atualizar</span>
+                <span className="hidden sm:inline">{language === 'pt' ? 'Atualizar' : 'Refresh'}</span>
               </button>
             </div>
 
@@ -583,7 +653,9 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                 }`}
               >
                 <Layers className="w-4 h-4" />
-                <span>Pedidos & Propostas ({pedidos.length})</span>
+                <span>
+                  {language === 'pt' ? 'Pedidos & Propostas' : 'Requests & Proposals'} ({pedidos.length})
+                </span>
               </button>
 
               <button
@@ -595,7 +667,9 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                 }`}
               >
                 <ShieldCheck className="w-4 h-4" />
-                <span>Catálogo de Produtos & Serviços ({catalogo.length})</span>
+                <span>
+                  {language === 'pt' ? 'Catálogo de Produtos & Serviços' : 'Products & Services Catalog'} ({catalogo.length})
+                </span>
               </button>
             </div>
 
@@ -604,22 +678,28 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               <div className="space-y-4">
                 {/* Filtros por Estado */}
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="text-slate-400 font-semibold mr-1">Filtrar por estado:</span>
+                  <span className={`font-semibold mr-1 ${darkMode ? 'text-slate-400' : 'text-slate-700'}`}>
+                    {language === 'pt' ? 'Filtrar por estado:' : 'Filter by status:'}
+                  </span>
                   {[
-                    { id: 'todos', label: 'Todos' },
-                    { id: 'recebido', label: 'Recebido' },
-                    { id: 'em_analise', label: 'Em Análise' },
-                    { id: 'necessita_revisao', label: 'Necessita de Revisão' },
-                    { id: 'proposta_criada', label: 'Proposta Criada' },
-                    { id: 'erro', label: 'Erro' },
+                    { id: 'todos', label: language === 'pt' ? 'Todos' : 'All' },
+                    { id: 'recebido', label: language === 'pt' ? 'Recebido' : 'Received' },
+                    { id: 'em_analise', label: language === 'pt' ? 'Em Análise' : 'In Analysis' },
+                    { id: 'necessita_revisao', label: language === 'pt' ? 'Necessita de Revisão' : 'Needs Review' },
+                    { id: 'proposta_criada', label: language === 'pt' ? 'Proposta Criada' : 'Proposal Created' },
+                    { id: 'erro', label: language === 'pt' ? 'Erro' : 'Error' },
                   ].map((f) => (
                     <button
                       key={f.id}
                       onClick={() => setFilterEstado(f.id)}
                       className={`px-3 py-1 rounded-lg font-bold transition-colors cursor-pointer border ${
                         filterEstado === f.id
-                          ? 'bg-slate-200 text-black border-slate-300 dark:bg-white dark:text-black'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
+                          ? darkMode
+                            ? 'bg-white text-black border-white'
+                            : 'bg-black text-white border-black'
+                          : darkMode
+                          ? 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+                          : 'bg-slate-100 border-slate-300 text-black hover:text-white hover:bg-black'
                       }`}
                     >
                       {f.label}
@@ -643,20 +723,22 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                               : 'bg-slate-100 border-slate-200 text-slate-600'
                           }`}
                         >
-                          <th className="py-3 px-4">Data</th>
-                          <th className="py-3 px-4">Cliente</th>
-                          <th className="py-3 px-4">Resumo do Pedido</th>
-                          <th className="py-3 px-3 text-center">Estado</th>
-                          <th className="py-3 px-4 text-right">Valor da Proposta</th>
-                          <th className="py-3 px-3 text-center">Notificação ao Aluno</th>
-                          <th className="py-3 px-4 text-center">Ações</th>
+                          <th className="py-3 px-4">{language === 'pt' ? 'Data' : 'Date'}</th>
+                          <th className="py-3 px-4">{language === 'pt' ? 'Cliente' : 'Client'}</th>
+                          <th className="py-3 px-4">{language === 'pt' ? 'Resumo do Pedido' : 'Request Summary'}</th>
+                          <th className="py-3 px-3 text-center">{language === 'pt' ? 'Estado' : 'Status'}</th>
+                          <th className="py-3 px-4 text-right">{language === 'pt' ? 'Valor da Proposta' : 'Proposal Amount'}</th>
+                          <th className="py-3 px-3 text-center">{language === 'pt' ? 'Notificação ao Aluno' : 'Student Notification'}</th>
+                          <th className="py-3 px-4 text-center">{language === 'pt' ? 'Ações' : 'Actions'}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800">
                         {filteredPedidos.length === 0 ? (
                           <tr>
                             <td colSpan={7} className="text-center py-12 text-slate-500">
-                              Nenhum pedido registado com o filtro selecionado.
+                              {language === 'pt'
+                                ? 'Nenhum pedido registado com o filtro selecionado.'
+                                : 'No requests recorded with the selected filter.'}
                             </td>
                           </tr>
                         ) : (
@@ -668,7 +750,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                               }`}
                             >
                               <td className="py-3.5 px-4 font-mono text-xs text-slate-400 whitespace-nowrap">
-                                {new Date(pedido.dataCriacao).toLocaleDateString('pt-PT', {
+                                {new Date(pedido.dataCriacao).toLocaleDateString(language === 'pt' ? 'pt-PT' : 'en-GB', {
                                   day: '2-digit',
                                   month: '2-digit',
                                   hour: '2-digit',
@@ -705,7 +787,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                                       setManualResumo(pedido.interpretacaoIA?.resumo || '');
                                     }}
                                     className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
-                                    title="Ver detalhes e processamento"
+                                    title={language === 'pt' ? 'Ver detalhes e processamento' : 'View details and processing'}
                                   >
                                     <Eye className="w-4 h-4" />
                                   </button>
@@ -716,7 +798,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                                       target="_blank"
                                       rel="noreferrer"
                                       className="p-1.5 rounded-lg bg-emerald-950/80 border border-emerald-800 text-emerald-400 hover:text-emerald-300 transition-colors"
-                                      title="Abrir página pública da proposta"
+                                      title={language === 'pt' ? 'Abrir página pública da proposta' : 'Open public proposal page'}
                                     >
                                       <ExternalLink className="w-4 h-4" />
                                     </a>
@@ -738,7 +820,9 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <p className="text-xs sm:text-sm text-slate-400">
-                    Fonte de verdade para cálculo automático de propostas pela aplicação.
+                    {language === 'pt'
+                      ? 'Fonte de verdade para cálculo automático de propostas pela aplicação.'
+                      : 'Single source of truth for automated proposal calculations.'}
                   </p>
                   <button
                     onClick={() => {
@@ -750,7 +834,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                         precoUnitarioCentimos: 10000,
                         moeda: 'EUR',
                         ativo: true,
-                        condicoes: 'Preço fictício de demonstração pedagógica.',
+                        condicoes: language === 'pt' ? 'Preço fictício de demonstração pedagógica.' : 'Fictitious demo price.',
                         demonstracao: true,
                       });
                       setIsCreatingItem(true);
@@ -758,7 +842,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                     className="px-3.5 py-2 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>Adicionar Produto / Serviço</span>
+                    <span>{language === 'pt' ? 'Adicionar Produto / Serviço' : 'Add Product / Service'}</span>
                   </button>
                 </div>
 
@@ -777,12 +861,12 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                               : 'bg-slate-100 border-slate-200 text-slate-600'
                           }`}
                         >
-                          <th className="py-3 px-4">Identificador</th>
-                          <th className="py-3 px-4">Nome & Descrição</th>
-                          <th className="py-3 px-3 text-center">Unidade</th>
-                          <th className="py-3 px-4 text-right">Preço Unitário</th>
-                          <th className="py-3 px-3 text-center">Estado</th>
-                          <th className="py-3 px-4 text-center">Ações</th>
+                          <th className="py-3 px-4">{language === 'pt' ? 'Identificador' : 'Identifier'}</th>
+                          <th className="py-3 px-4">{language === 'pt' ? 'Nome & Descrição' : 'Name & Description'}</th>
+                          <th className="py-3 px-3 text-center">{language === 'pt' ? 'Unidade' : 'Unit'}</th>
+                          <th className="py-3 px-4 text-right">{language === 'pt' ? 'Preço Unitário' : 'Unit Price'}</th>
+                          <th className="py-3 px-3 text-center">{language === 'pt' ? 'Estado' : 'Status'}</th>
+                          <th className="py-3 px-4 text-center">{language === 'pt' ? 'Ações' : 'Actions'}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800">
@@ -821,7 +905,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                                     : 'bg-slate-800 text-slate-400 border-slate-700'
                                 }`}
                               >
-                                {item.ativo ? 'Ativo' : 'Inativo'}
+                                {item.ativo ? (language === 'pt' ? 'Ativo' : 'Active') : (language === 'pt' ? 'Inativo' : 'Inactive')}
                               </button>
                             </td>
                             <td className="py-3.5 px-4 text-center">
@@ -831,7 +915,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                                   setIsCreatingItem(false);
                                 }}
                                 className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
-                                title="Editar item"
+                                title={language === 'pt' ? 'Editar item' : 'Edit item'}
                               >
                                 <Edit2 className="w-4 h-4" />
                               </button>
@@ -858,13 +942,13 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div>
                   <h3 className="text-xl font-bold flex items-center gap-2">
-                    <span>Detalhe do Pedido</span>
+                    <span>{language === 'pt' ? 'Detalhe do Pedido' : 'Request Details'}</span>
                     <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">
                       {selectedPedido.id}
                     </span>
                   </h3>
                   <span className="text-xs text-slate-400">
-                    Cliente: <strong>{selectedPedido.nome}</strong> ({selectedPedido.email})
+                    {language === 'pt' ? 'Cliente:' : 'Client:'} <strong>{selectedPedido.nome}</strong> ({selectedPedido.email})
                   </span>
                 </div>
                 <button
@@ -895,7 +979,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               {/* Texto Original */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Texto Original do Pedido:
+                  {language === 'pt' ? 'Texto Original do Pedido:' : 'Original Request Text:'}
                 </label>
                 <div
                   className={`p-4 rounded-xl border font-mono text-xs leading-relaxed whitespace-pre-line ${
@@ -910,7 +994,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Interpretação Estruturada da IA (Gemini):</span>
+                  <span>{language === 'pt' ? 'Interpretação Estruturada da IA (Gemini):' : 'Structured AI Interpretation (Gemini):'}</span>
                 </label>
 
                 {selectedPedido.interpretacaoIA ? (
@@ -920,34 +1004,36 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                     }`}
                   >
                     <div>
-                      <strong className="text-slate-400">Resumo:</strong>{' '}
+                      <strong className="text-slate-400">{language === 'pt' ? 'Resumo:' : 'Summary:'}</strong>{' '}
                       <span>{selectedPedido.interpretacaoIA.resumo}</span>
                     </div>
 
                     <div>
-                      <strong className="text-slate-400 block mb-1">Itens Mapeados:</strong>
+                      <strong className="text-slate-400 block mb-1">{language === 'pt' ? 'Itens Mapeados:' : 'Mapped Items:'}</strong>
                       {selectedPedido.interpretacaoIA.itens?.length > 0 ? (
                         <ul className="list-disc pl-5 space-y-1">
                           {selectedPedido.interpretacaoIA.itens.map((it: any, i: number) => (
                             <li key={i}>
                               <strong className="font-mono text-emerald-400">{it.catalogoId}</strong>{' '}
-                              — Qtd: {it.quantidade !== null ? it.quantidade : '(não especificada)'}
+                              — {language === 'pt' ? 'Qtd:' : 'Qty:'} {it.quantidade !== null ? it.quantidade : (language === 'pt' ? '(não especificada)' : '(not specified)')}
                               {it.evidencia && (
                                 <span className="text-slate-400 italic block">
-                                  Evidência: "{it.evidencia}"
+                                  {language === 'pt' ? 'Evidência:' : 'Evidence:'} "{it.evidencia}"
                                 </span>
                               )}
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <span className="text-slate-500 italic">Nenhum item mapeado automaticamente.</span>
+                        <span className="text-slate-500 italic">
+                          {language === 'pt' ? 'Nenhum item mapeado automaticamente.' : 'No items mapped automatically.'}
+                        </span>
                       )}
                     </div>
 
                     {selectedPedido.interpretacaoIA.informacaoEmFalta?.length > 0 && (
                       <div className="text-amber-400">
-                        <strong>Informação em falta:</strong>
+                        <strong>{language === 'pt' ? 'Informação em falta:' : 'Missing information:'}</strong>
                         <ul className="list-disc pl-5 space-y-0.5 mt-1">
                           {selectedPedido.interpretacaoIA.informacaoEmFalta.map((info: string, i: number) => (
                             <li key={i}>{info}</li>
@@ -958,13 +1044,13 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
 
                     {selectedPedido.interpretacaoIA.motivoRevisao && (
                       <div className="text-amber-400">
-                        <strong>Motivo de Revisão:</strong>{' '}
+                        <strong>{language === 'pt' ? 'Motivo de Revisão:' : 'Review Reason:'}</strong>{' '}
                         <span>{selectedPedido.interpretacaoIA.motivoRevisao}</span>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500 italic">Sem interpretação registada.</p>
+                  <p className="text-xs text-slate-500 italic">{language === 'pt' ? 'Sem interpretação registada.' : 'No interpretation recorded.'}</p>
                 )}
               </div>
 
@@ -978,7 +1064,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-xs text-emerald-400 font-bold block">
-                        Proposta Emitida: {selectedPedido.proposta.numeroProposta}
+                        {language === 'pt' ? 'Proposta Emitida:' : 'Issued Proposal:'} {selectedPedido.proposta.numeroProposta}
                       </span>
                       <span className="text-xl font-bold font-mono text-emerald-500">
                         {formatEuro(selectedPedido.proposta.totalCentimos)}
@@ -993,7 +1079,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                         className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
-                        <span>Abrir Proposta</span>
+                        <span>{language === 'pt' ? 'Abrir Proposta' : 'Open Proposal'}</span>
                       </a>
 
                       <button
@@ -1002,7 +1088,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                         className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 cursor-pointer"
                       >
                         <Send className="w-3.5 h-3.5" />
-                        <span>Reenviar Notificação ao Aluno</span>
+                        <span>{language === 'pt' ? 'Reenviar Notificação ao Aluno' : 'Resend Student Notification'}</span>
                       </button>
                     </div>
                   </div>
@@ -1018,12 +1104,14 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                 >
                   <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
                     <Edit2 className="w-4 h-4" />
-                    <span>Resolver Pedido em Revisão (Orçamento Manual)</span>
+                    <span>{language === 'pt' ? 'Resolver Pedido em Revisão (Orçamento Manual)' : 'Resolve Request in Review (Manual Quote)'}</span>
                   </h4>
 
                   <div className="space-y-3">
                     <p className="text-xs text-slate-400">
-                      Selecione os produtos/serviços e as respetivas quantidades a orçamentar:
+                      {language === 'pt'
+                        ? 'Selecione os produtos/serviços e as respetivas quantidades a orçamentar:'
+                        : 'Select the products/services and respective quantities to quote:'}
                     </p>
 
                     <div className="space-y-2">
@@ -1048,7 +1136,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                             <div className="flex items-center gap-2">
                               {selecionado ? (
                                 <div className="flex items-center gap-2">
-                                  <label className="text-[11px] text-slate-400">Qtd:</label>
+                                  <label className="text-[11px] text-slate-400">{language === 'pt' ? 'Qtd:' : 'Qty:'}</label>
                                   <input
                                     type="number"
                                     min="1"
@@ -1084,7 +1172,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                                   }
                                   className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold"
                                 >
-                                  + Incluir
+                                  {language === 'pt' ? '+ Incluir' : '+ Include'}
                                 </button>
                               )}
                             </div>
@@ -1099,7 +1187,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                         disabled={actionLoading || manualItems.length === 0}
                         className="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white cursor-pointer shadow-md"
                       >
-                        {actionLoading ? 'A calcular...' : 'Calcular e Aprovar Proposta'}
+                        {actionLoading ? (language === 'pt' ? 'A calcular...' : 'Calculating...') : (language === 'pt' ? 'Calcular e Aprovar Proposta' : 'Calculate & Approve Proposal')}
                       </button>
                     </div>
                   </div>
@@ -1114,14 +1202,14 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                   className="px-4 py-2 rounded-xl text-xs font-bold bg-sky-950 border border-sky-800 text-sky-300 hover:bg-sky-900 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${actionLoading ? 'animate-spin' : ''}`} />
-                  <span>Repetir Processamento com IA</span>
+                  <span>{language === 'pt' ? 'Repetir Processamento com IA' : 'Retry AI Processing'}</span>
                 </button>
 
                 <button
                   onClick={() => setSelectedPedido(null)}
                   className="px-4 py-2 rounded-xl text-xs font-bold border border-slate-700 text-slate-300 hover:bg-slate-800 cursor-pointer"
                 >
-                  Fechar
+                  {language === 'pt' ? 'Fechar' : 'Close'}
                 </button>
               </div>
             </div>
@@ -1138,7 +1226,9 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
             >
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h3 className="text-lg font-bold">
-                  {isCreatingItem ? 'Adicionar Produto ao Catálogo' : 'Editar Produto do Catálogo'}
+                  {isCreatingItem
+                    ? (language === 'pt' ? 'Adicionar Produto ao Catálogo' : 'Add Product to Catalog')
+                    : (language === 'pt' ? 'Editar Produto do Catálogo' : 'Edit Catalog Product')}
                 </h3>
                 <button
                   onClick={() => setEditingItem(null)}
@@ -1150,7 +1240,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
 
               <form onSubmit={handleSalvarItemCatalogo} className="space-y-4 text-xs">
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-300">Identificador (ID):</label>
+                  <label className="font-bold text-slate-300">{language === 'pt' ? 'Identificador (ID):' : 'Identifier (ID):'}</label>
                   <input
                     type="text"
                     required
@@ -1162,7 +1252,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-300">Nome do Produto / Serviço:</label>
+                  <label className="font-bold text-slate-300">{language === 'pt' ? 'Nome do Produto / Serviço:' : 'Product / Service Name:'}</label>
                   <input
                     type="text"
                     required
@@ -1173,7 +1263,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-300">Descrição Comercial:</label>
+                  <label className="font-bold text-slate-300">{language === 'pt' ? 'Descrição Comercial:' : 'Commercial Description:'}</label>
                   <textarea
                     rows={2}
                     value={editingItem.descricao}
@@ -1184,7 +1274,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-300">Unidade de Venda:</label>
+                    <label className="font-bold text-slate-300">{language === 'pt' ? 'Unidade de Venda:' : 'Sales Unit:'}</label>
                     <select
                       value={editingItem.unidade}
                       onChange={(e) =>
@@ -1192,14 +1282,14 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                       }
                       className="w-full px-3 py-2 rounded-lg bg-black/40 border border-slate-700 text-xs font-mono"
                     >
-                      <option value="unidade">Unidade</option>
-                      <option value="hora">Hora</option>
-                      <option value="pacote">Pacote</option>
+                      <option value="unidade">{language === 'pt' ? 'Unidade' : 'Unit'}</option>
+                      <option value="hora">{language === 'pt' ? 'Hora' : 'Hour'}</option>
+                      <option value="pacote">{language === 'pt' ? 'Pacote' : 'Package'}</option>
                     </select>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-300">Preço em Cêntimos (€):</label>
+                    <label className="font-bold text-slate-300">{language === 'pt' ? 'Preço em Cêntimos (€):' : 'Price in Cents (€):'}</label>
                     <input
                       type="number"
                       required
@@ -1214,13 +1304,13 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                       className="w-full px-3 py-2 rounded-lg bg-black/40 border border-slate-700 text-xs font-mono text-emerald-400"
                     />
                     <span className="text-[10px] text-slate-500">
-                      Ex: 54900 cêntimos = 549,00 €
+                      {language === 'pt' ? 'Ex: 54900 cêntimos = 549,00 €' : 'E.g.: 54900 cents = €549.00'}
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-300">Condições / Âmbito:</label>
+                  <label className="font-bold text-slate-300">{language === 'pt' ? 'Condições / Âmbito:' : 'Terms / Scope:'}</label>
                   <input
                     type="text"
                     value={editingItem.condicoes}
@@ -1238,7 +1328,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                     className="w-4 h-4 rounded text-emerald-600"
                   />
                   <label htmlFor="item-ativo" className="font-bold text-slate-300">
-                    Item Ativo no Catálogo
+                    {language === 'pt' ? 'Item Ativo no Catálogo' : 'Active Item in Catalog'}
                   </label>
                 </div>
 
@@ -1248,13 +1338,13 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, onBackToHome }) 
                     onClick={() => setEditingItem(null)}
                     className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 cursor-pointer"
                   >
-                    Cancelar
+                    {language === 'pt' ? 'Cancelar' : 'Cancel'}
                   </button>
                   <button
                     type="submit"
                     className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-bold text-white cursor-pointer shadow-md"
                   >
-                    Guardar no Catálogo
+                    {language === 'pt' ? 'Guardar no Catálogo' : 'Save to Catalog'}
                   </button>
                 </div>
               </form>
