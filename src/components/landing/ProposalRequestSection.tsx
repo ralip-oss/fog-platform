@@ -1,11 +1,75 @@
-import React, { useState } from 'react';
-import { Send, CheckCircle2, AlertCircle, Sparkles, Shield, Loader2, Info } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  Shield,
+  Loader2,
+  Info,
+  Clock,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 interface ProposalRequestSectionProps {
   darkMode: boolean;
   onSuccessSubmitted?: (pedidoId: string, propostaToken?: string | null) => void;
 }
+
+interface ExemploItem {
+  id: string;
+  pedidoTexto: {
+    pt: string;
+    en: string;
+  } | string;
+  estadoProcessamento: 'aceite' | 'recebido' | 'proposta_criada';
+}
+
+const EXEMPLOS_BASE: ExemploItem[] = [
+  {
+    id: 'base-1',
+    pedidoTexto: {
+      pt: 'Gostaríamos de encomendar 2 consolas Fog Deck OLED com auditoria técnica Fog Verified para cada uma, e incluir 3 meses de suporte dedicado a estúdios.',
+      en: 'We would like to order 2 Fog Deck OLED consoles with Fog Verified technical audit for each, and include 3 months of dedicated studio support.',
+    },
+    estadoProcessamento: 'aceite',
+  },
+  {
+    id: 'base-2',
+    pedidoTexto: {
+      pt: 'Publicação de jogo independente na Fog Store com integração de Fog Guard anti-cheat, conquistas Fogworks e salvamento em nuvem.',
+      en: 'Independent game publishing on the Fog Store with Fog Guard anti-cheat integration, Fogworks achievements, and cloud saves.',
+    },
+    estadoProcessamento: 'recebido',
+  },
+  {
+    id: 'base-3',
+    pedidoTexto: {
+      pt: 'Aquisição de 5 estações Fog Station Pro para equipa de testes de qualidade e 20 horas de consultoria técnica para compatibilidade de shaders.',
+      en: 'Acquisition of 5 Fog Station Pro units for QA testing team and 20 hours of technical consulting for shader compatibility.',
+    },
+    estadoProcessamento: 'aceite',
+  },
+  {
+    id: 'base-4',
+    pedidoTexto: {
+      pt: 'Pacote Fog Partner Publishing com destaque editorial na semana de lançamento e auditoria técnica de desempenho para certificação de comandos.',
+      en: 'Fog Partner Publishing package with editorial spotlight on launch week and technical performance audit for controller certification.',
+    },
+    estadoProcessamento: 'recebido',
+  },
+  {
+    id: 'base-5',
+    pedidoTexto: {
+      pt: 'Submissão de novo título RPG para o catálogo Fog com verificação de compatibilidade para ecrãs OLED a 90Hz e suporte para comandos Fog Controller.',
+      en: 'Submission of new RPG title for the Fog catalog with compatibility verification for 90Hz OLED displays and Fog Controller support.',
+    },
+    estadoProcessamento: 'aceite',
+  },
+];
 
 export const ProposalRequestSection: React.FC<ProposalRequestSectionProps> = ({
   darkMode,
@@ -22,6 +86,137 @@ export const ProposalRequestSection: React.FC<ProposalRequestSectionProps> = ({
   const [successSubmitted, setSuccessSubmitted] = useState(false);
   const [pedidoIdGerado, setPedidoIdGerado] = useState<string | null>(null);
   const [propostaTokenGerado, setPropostaTokenGerado] = useState<string | null>(null);
+
+  // Estados para a secção de exemplos de propostas anteriores aceites/recebidas
+  const [dynamicExemplos, setDynamicExemplos] = useState<ExemploItem[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  // Consulta pública dos pedidos reais aceites/recebidos (apenas texto e estado)
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/pedidos/exemplos')
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && data.exemplos && Array.isArray(data.exemplos) && data.exemplos.length > 0) {
+          const validos = data.exemplos.filter(
+            (e: any) =>
+              e.pedidoTexto &&
+              typeof e.pedidoTexto === 'string' &&
+              e.pedidoTexto.trim().length > 5
+          );
+          if (validos.length > 0) {
+            setDynamicExemplos(validos);
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn('Erro ao carregar exemplos de pedidos:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const combinedExemplos = useMemo(() => {
+    if (dynamicExemplos.length === 0) return EXEMPLOS_BASE;
+
+    const realItems: ExemploItem[] = dynamicExemplos.map((e) => ({
+      id: e.id,
+      pedidoTexto: e.pedidoTexto,
+      estadoProcessamento: e.estadoProcessamento,
+    }));
+
+    const list = [...realItems];
+    for (const base of EXEMPLOS_BASE) {
+      const textBase = typeof base.pedidoTexto === 'object' ? base.pedidoTexto.pt : base.pedidoTexto;
+      if (!list.some((l) => (typeof l.pedidoTexto === 'string' ? l.pedidoTexto : l.pedidoTexto.pt) === textBase)) {
+        list.push(base);
+      }
+    }
+    return list.slice(0, 8);
+  }, [dynamicExemplos]);
+
+  // Temporizador de 10 segundos em loop com barra de progresso no ponto selecionado
+  useEffect(() => {
+    if (combinedExemplos.length <= 1) return;
+
+    const duration = 10000; // 10 segundos
+    let startTimestamp: number | null = null;
+    let rafId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
+
+      if (elapsed >= duration) {
+        setCurrentIndex((prev) => (prev + 1) % combinedExemplos.length);
+        setProgress(0);
+        startTimestamp = null;
+      } else {
+        setProgress((elapsed / duration) * 100);
+        rafId = requestAnimationFrame(step);
+      }
+    };
+
+    rafId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+    };
+  }, [currentIndex, combinedExemplos.length]);
+
+  const handleSelectIndex = (idx: number) => {
+    setCurrentIndex(idx);
+    setProgress(0);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + combinedExemplos.length) % combinedExemplos.length);
+    setProgress(0);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % combinedExemplos.length);
+    setProgress(0);
+  };
+
+  const currentExemplo = combinedExemplos[currentIndex] || combinedExemplos[0];
+  const currentExemploText = currentExemplo
+    ? typeof currentExemplo.pedidoTexto === 'string'
+      ? currentExemplo.pedidoTexto
+      : language === 'pt'
+      ? currentExemplo.pedidoTexto.pt
+      : currentExemplo.pedidoTexto.en
+    : '';
+
+  const renderStatusBadge = (estado: string) => {
+    switch (estado) {
+      case 'aceite':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 shadow-2xs">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>{language === 'pt' ? 'Aceite' : 'Accepted'}</span>
+          </span>
+        );
+      case 'recebido':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/30 shadow-2xs">
+            <Clock className="w-3.5 h-3.5" />
+            <span>{language === 'pt' ? 'Recebido' : 'Received'}</span>
+          </span>
+        );
+      case 'proposta_criada':
+      default:
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-500 dark:text-sky-400 border border-sky-500/30 shadow-2xs">
+            <Check className="w-3.5 h-3.5" />
+            <span>{language === 'pt' ? 'Proposta Criada' : 'Proposal Created'}</span>
+          </span>
+        );
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -348,6 +543,101 @@ export const ProposalRequestSection: React.FC<ProposalRequestSectionProps> = ({
                 </button>
               </form>
             )}
+          </div>
+        </div>
+
+        {/* Secção de Exemplos de Pedidos Anteriores Aceites / Recebidos em Scroll Automático */}
+        <div className="max-w-2xl mx-auto w-full">
+          <div
+            className={`rounded-3xl p-6 sm:p-8 border shadow-xl transition-all ${
+              darkMode
+                ? 'bg-slate-950/90 border-slate-800 text-white'
+                : 'bg-white border-slate-300 text-black'
+            }`}
+          >
+            {/* Cabeçalho do Card: Rótulo e Badge de Estado */}
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800/80">
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">
+                  {language === 'pt' ? 'Exemplos de Pedidos Anteriores' : 'Examples of Past Requests'}
+                </span>
+              </div>
+              {renderStatusBadge(currentExemplo?.estadoProcessamento || 'aceite')}
+            </div>
+
+            {/* Apenas o texto do pedido (sem qualquer identificação do cliente) */}
+            <div className="py-6 min-h-[96px] sm:min-h-[84px] flex items-center justify-center">
+              <p
+                key={currentIndex}
+                className={`text-sm sm:text-base leading-relaxed text-center italic transition-all duration-300 ${
+                  darkMode ? 'text-slate-200' : 'text-slate-800 font-medium'
+                }`}
+              >
+                "{currentExemploText}"
+              </p>
+            </div>
+
+            {/* Linha pontilhada (1 ponto por pedido) com ponto selecionado em barra de progresso */}
+            <div className="pt-2 flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={handlePrev}
+                aria-label={language === 'pt' ? 'Pedido anterior' : 'Previous request'}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                  darkMode
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-500 hover:text-black hover:bg-slate-100'
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-2">
+                {combinedExemplos.map((item, idx) => {
+                  const isSelected = idx === currentIndex;
+                  if (isSelected) {
+                    return (
+                      <button
+                        key={item.id || idx}
+                        type="button"
+                        onClick={() => handleSelectIndex(idx)}
+                        aria-label={language === 'pt' ? `Pedido ${idx + 1}` : `Request ${idx + 1}`}
+                        title={language === 'pt' ? `Pedido ${idx + 1}` : `Request ${idx + 1}`}
+                        className="w-12 h-2.5 rounded-full bg-sky-950 border border-sky-900/60 overflow-hidden relative cursor-pointer focus:outline-none focus:ring-1 focus:ring-sky-500"
+                      >
+                        <div
+                          className="h-full bg-sky-500 rounded-full transition-[width] duration-75 ease-linear"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </button>
+                    );
+                  }
+                  return (
+                    <button
+                      key={item.id || idx}
+                      type="button"
+                      onClick={() => handleSelectIndex(idx)}
+                      aria-label={language === 'pt' ? `Pedido ${idx + 1}` : `Request ${idx + 1}`}
+                      title={language === 'pt' ? `Pedido ${idx + 1}` : `Request ${idx + 1}`}
+                      className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600 hover:opacity-80 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-400"
+                    />
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNext}
+                aria-label={language === 'pt' ? 'Próximo pedido' : 'Next request'}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                  darkMode
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-500 hover:text-black hover:bg-slate-100'
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

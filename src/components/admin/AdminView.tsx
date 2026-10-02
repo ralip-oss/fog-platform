@@ -503,9 +503,32 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-sky-600 flex items-center justify-center text-white font-bold text-xs">
-                F
+            <div className="flex items-center gap-2.5">
+              <div
+                className={`w-9 h-9 rounded-xl shadow-md transition-all flex items-center justify-center border shrink-0 ${
+                  darkMode
+                    ? 'bg-gradient-to-br from-white via-slate-100 to-slate-200 border-white/40'
+                    : 'bg-gradient-to-br from-sky-500 via-sky-600 to-sky-700 border-sky-400/40'
+                }`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className={`w-5 h-5 fill-none transition-colors ${
+                    darkMode ? 'stroke-sky-600' : 'stroke-white'
+                  }`}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-label="Chimney Logo"
+                >
+                  <path d="M5 21h14" />
+                  <path d="M6.5 21V11h11v10" />
+                  <path d="M5 11h14" />
+                  <path d="M9.5 8c0-1.2 1-1.8 1-3" />
+                  <path d="M13.5 7c0-1 1-1.5 1-2.5" />
+                  <line x1="10" y1="15" x2="14" y2="15" strokeWidth="1.5" />
+                  <line x1="8" y1="18" x2="16" y2="18" strokeWidth="1.5" />
+                </svg>
               </div>
               <div>
                 <span className="font-extrabold text-sm sm:text-base leading-none block">

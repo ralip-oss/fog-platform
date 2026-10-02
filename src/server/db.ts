@@ -32,6 +32,8 @@ export type EstadoProcessamento =
   | 'em_analise'
   | 'necessita_revisao'
   | 'proposta_criada'
+  | 'aceite'
+  | 'rejeitado'
   | 'erro';
 
 export interface InterpretacaoIA {

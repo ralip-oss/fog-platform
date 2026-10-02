@@ -239,6 +239,37 @@ async function startServer() {
     }
   });
 
+  /**
+   * Consulta pública de exemplos de pedidos aceites ou recebidos
+   * Retorna estritamente o texto do pedido e o seu estado (SEM qualquer identificação de clientes)
+   */
+  app.get('/api/pedidos/exemplos', async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const pedidos = await listPedidos();
+      const filtrados = pedidos.filter(
+        (p) =>
+          (p.estadoProcessamento === 'aceite' ||
+           p.estadoProcessamento === 'recebido' ||
+           p.estadoProcessamento === 'proposta_criada') &&
+          p.pedidoTexto &&
+          !p.pedidoTexto.toLowerCase().includes('ignore as regras') &&
+          !p.pedidoTexto.toLowerCase().includes('ignore previous') &&
+          !p.pedidoTexto.toLowerCase().includes('catering')
+      );
+
+      const exemplos = filtrados.map((p) => ({
+        id: p.id,
+        pedidoTexto: p.pedidoTexto,
+        estadoProcessamento: p.estadoProcessamento,
+      }));
+
+      res.json({ exemplos });
+    } catch (err: any) {
+      console.error('[API] Erro ao obter exemplos de pedidos:', err);
+      res.json({ exemplos: [] });
+    }
+  });
+
   // ==========================================
   // ROTAS ADMINISTRATIVAS PROTEGIDAS
   // ==========================================
