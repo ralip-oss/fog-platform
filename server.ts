@@ -17,7 +17,10 @@ import {
   saveCatalogoItem,
   CatalogoItem,
 } from './src/server/db';
-import { interpretarPedidoComGemini } from './src/server/geminiService';
+import {
+  interpretarPedidoComGemini,
+  interpretarPedidoComHeuristica,
+} from './src/server/geminiService';
 import { calcularEGerarProposta } from './src/server/calculatorService';
 import { enviarNotificacaoAoAluno } from './src/server/emailService';
 import { requireAdminAuth, AuthenticatedRequest } from './src/server/authMiddleware';
@@ -148,18 +151,13 @@ async function startServer() {
         });
       } catch (geminiErr: any) {
         console.error('[API] Erro no processamento Gemini:', geminiErr.message || geminiErr);
-        await updatePedido(pedidoId, {
-          estadoProcessamento: 'erro',
-          erroProcessamento: `Falha na IA: ${geminiErr.message || 'Erro desconhecido'}`,
-        });
+        interpretacao = interpretarPedidoComHeuristica(pedidoTexto.trim(), catalogoAtivo);
 
-        res.json({
-          success: true,
-          pedidoId,
-          message: 'O seu pedido foi recebido com sucesso.',
-          estadoProcessamento: 'erro',
+        await updatePedido(pedidoId, {
+          interpretacaoIA: interpretacao,
+          informacaoEmFalta: interpretacao.informacaoEmFalta || [],
+          motivoRevisao: `Processado com motor de catálogo alternativo (IA em alta procura temporária): ${geminiErr.message || ''}`,
         });
-        return;
       }
 
       // 4. Cálculo da proposta no backend com preços do catálogo

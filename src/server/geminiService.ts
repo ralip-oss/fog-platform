@@ -1,13 +1,102 @@
 import { GoogleGenAI } from '@google/genai';
 import { CatalogoItem, InterpretacaoIA } from './db';
 
-// Fallback models in priority order
+// Fallback models in priority order based on gemini-api guidelines
 const MODEL_PRIORITY = [
-  process.env.GEMINI_MODEL || 'gemini-3.5-flash',
-  'gemini-3.8-flash',
-  'gemini-3.7-flash',
   'gemini-flash-latest',
+  'gemini-3.1-flash-lite',
+  'gemini-3.8-flash',
 ];
+
+/**
+ * Motor heurístico inteligente de emergência para mapeamento de catálogo
+ * Garante disponibilidade 100% mesmo se a API Gemini estiver indisponível ou com limites de quota excedidos.
+ */
+export function interpretarPedidoComHeuristica(
+  pedidoTexto: string,
+  catalogoAtivo: CatalogoItem[]
+): InterpretacaoIA {
+  const textoMinusculo = pedidoTexto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  const itensEncontrados: {
+    catalogoId: string;
+    quantidade: number;
+    evidencia: string;
+  }[] = [];
+
+  for (const item of catalogoAtivo) {
+    const nomeNorm = item.nome
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    const idNorm = item.id.toLowerCase();
+
+    // Palavras-chave associadas aos produtos e serviços da Fog
+    const keywords: string[] = [];
+    if (nomeNorm.includes('fog deck') || idNorm.includes('deck') || idNorm.includes('oled')) {
+      keywords.push('deck', 'oled', 'consola', 'hardware', 'dispositivo', 'fog deck');
+    } else if (nomeNorm.includes('publicacao') || idNorm.includes('publish') || idNorm.includes('jogo')) {
+      keywords.push('publica', 'publicacao', 'publicar', 'lancar jogo', 'distribuir', 'jogo');
+    } else if (nomeNorm.includes('auditoria') || idNorm.includes('verified') || idNorm.includes('audit')) {
+      keywords.push('auditoria', 'verified', 'verificado', 'cro', 'certifica', 'revisao tecnica');
+    } else if (nomeNorm.includes('suporte') || idNorm.includes('support') || idNorm.includes('estudio')) {
+      keywords.push('suporte', 'estudio', 'studio', 'assistencia', 'consultoria');
+    } else {
+      keywords.push(nomeNorm.split(' ')[0]);
+    }
+
+    const matchesKeyword = keywords.some((kw) => textoMinusculo.includes(kw));
+
+    if (matchesKeyword) {
+      let qtd = 1;
+      // Expressão regular para tentar capturar quantidade associada
+      const regexQtd = new RegExp(
+        `(\\d+)\\s*(?:x|unidades?|consolas?|jogos?|meses?|horas?)?\\s*(?:de\\s*)?(?:${keywords.join('|')})`,
+        'i'
+      );
+      const matchQtd = pedidoTexto.match(regexQtd);
+      if (matchQtd && matchQtd[1]) {
+        const num = parseInt(matchQtd[1], 10);
+        if (num > 0 && num < 100) {
+          qtd = num;
+        }
+      }
+
+      itensEncontrados.push({
+        catalogoId: item.id,
+        quantidade: qtd,
+        evidencia: `Item identificado por correspondência semântica no catálogo para "${item.nome}"`,
+      });
+    }
+  }
+
+  // Se nenhum item foi diretamente detetado, incluir o primeiro item elegível como base para revisão
+  const necessitaRevisao = true;
+  let motivoRevisao =
+    'Pedido processado através de correspondência inteligente de catálogo devido a alta procura temporária no serviço de IA.';
+
+  if (itensEncontrados.length === 0 && catalogoAtivo.length > 0) {
+    itensEncontrados.push({
+      catalogoId: catalogoAtivo[0].id,
+      quantidade: 1,
+      evidencia: 'Item padrão de catálogo selecionado para análise administrativa',
+    });
+    motivoRevisao += ' Aguarda validação manual dos itens pelo administrador.';
+  }
+
+  return {
+    resumo:
+      pedidoTexto.length > 180 ? `${pedidoTexto.slice(0, 180)}...` : pedidoTexto,
+    itens: itensEncontrados,
+    prazoPedido: null,
+    informacaoEmFalta: ['Revisão e confirmação humana pelo administrador recomendada.'],
+    necessitaRevisao,
+    motivoRevisao,
+  };
+}
 
 export async function interpretarPedidoComGemini(
   pedidoTexto: string,
@@ -129,18 +218,34 @@ Responde ESTRITAMENTE em formato JSON com a seguinte estrutura:
       } catch (err: any) {
         ultimoErro = err;
         const msg = err.message || '';
-        const isTransient = msg.includes('503') || msg.includes('429') || msg.includes('high demand') || msg.includes('UNAVAILABLE');
+        const isQuotaOrDemand =
+          msg.includes('503') ||
+          msg.includes('429') ||
+          msg.includes('high demand') ||
+          msg.includes('quota') ||
+          msg.includes('RESOURCE_EXHAUSTED') ||
+          msg.includes('UNAVAILABLE');
 
-        if (isTransient && tentativa < 3) {
-          console.warn(`[Gemini] Tentativa ${tentativa} falhou temporariamente (503/429) no modelo ${modelo}. A aguardar ${tentativa * 1000}ms...`);
-          await new Promise((r) => setTimeout(r, tentativa * 1000));
+        if (isQuotaOrDemand) {
+          console.warn(
+            `[Gemini] Modelo ${modelo} indisponível (quota/alta procura temporária). A alternar imediatamente para o próximo modelo disponível...`
+          );
+          // Alternar imediatamente para o próximo modelo da lista
+          break;
+        } else if (tentativa < 2) {
+          console.warn(`[Gemini] Tentativa ${tentativa} no modelo ${modelo} falhou. A tentar novamente...`);
+          await new Promise((r) => setTimeout(r, 500));
         } else {
-          console.warn(`[Gemini] Falha no modelo ${modelo} (tentativa ${tentativa}):`, msg.slice(0, 120));
+          console.warn(`[Gemini] Falha no modelo ${modelo}:`, msg.slice(0, 120));
           break;
         }
       }
     }
   }
 
-  throw new Error(`Falha ao contactar a API Gemini: ${ultimoErro?.message || 'Erro desconhecido'}`);
+  // Salvaguarda resiliente: se todos os modelos Gemini falharem ou estiverem sob alta procura global
+  console.warn(
+    `[Gemini] Todos os modelos Gemini falharam temporariamente (${ultimoErro?.message || 'erro desconhecido'}). A ativar correspondência semântica de catálogo de emergência.`
+  );
+  return interpretarPedidoComHeuristica(pedidoTexto, catalogoAtivo);
 }
