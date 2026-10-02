@@ -6,6 +6,7 @@ import {
   Proposta,
   PropostaItem,
   createProposta,
+  updateProposta,
   listPropostas,
   updatePedido,
 } from './db';
@@ -106,14 +107,28 @@ export async function calcularEGerarProposta(
   const propostasExistentes = await listPropostas();
   const propostasDoPedido = propostasExistentes.filter((p) => p.pedidoId === pedido.id);
 
-  // Evita duplicar se já foi gerada proposta válida para este pedido
+  // Se já existe proposta para este pedido, atualiza-a com os novos itens e totais corrigidos
   if (propostasDoPedido.length > 0) {
     const propostaExistente = propostasDoPedido[0];
+    const camposAtualizados = {
+      resumoAmbito: interpretacao.resumo || 'Fornecimento e prestação de serviços no ecossistema Fog.',
+      itens: itensCalculados,
+      totalCentimos,
+    };
+    await updateProposta(propostaExistente.id, camposAtualizados);
     await updatePedido(pedido.id, {
       estadoProcessamento: 'proposta_criada',
       propostaId: propostaExistente.id,
+      motivoRevisao: null,
+      interpretacaoIA: interpretacao,
     });
-    return { elegivel: true, proposta: propostaExistente };
+    return {
+      elegivel: true,
+      proposta: {
+        ...propostaExistente,
+        ...camposAtualizados,
+      },
+    };
   }
 
   const numeroProposta = `PROP-2026-${String(propostasExistentes.length + 1).padStart(3, '0')}`;

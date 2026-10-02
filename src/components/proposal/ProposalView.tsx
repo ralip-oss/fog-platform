@@ -16,6 +16,11 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import {
+  getLocalizedCatalogItem,
+  getLocalizedAIText,
+  getLocalizedUnit,
+} from '../../utils/catalogLocalization';
 
 interface ProposalItem {
   catalogoId: string;
@@ -321,7 +326,7 @@ export const ProposalView: React.FC<ProposalViewProps> = ({
                   <strong className="block text-xs uppercase tracking-wider text-slate-400 mb-1">
                     {language === 'pt' ? 'Resumo do Âmbito da Proposta:' : 'Scope Summary of Proposal:'}
                   </strong>
-                  <p>{proposta.resumoAmbito}</p>
+                  <p>{getLocalizedAIText(proposta.resumoAmbito, language)}</p>
                 </div>
               </div>
 
@@ -350,42 +355,55 @@ export const ProposalView: React.FC<ProposalViewProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                      {proposta.itens.map((item, idx) => (
-                        <tr
-                          key={idx}
-                          className={`transition-colors ${
-                            darkMode ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'
-                          }`}
-                        >
-                          <td className="py-4 px-4 align-top">
-                            <span className="font-bold block">{item.nome}</span>
-                            <span
-                              className={`text-xs mt-0.5 block leading-relaxed ${
-                                darkMode ? 'text-slate-400' : 'text-slate-600'
-                              }`}
-                            >
-                              {item.descricao}
-                            </span>
-                            {item.condicoes && (
-                              <span className="text-[11px] text-slate-400 italic block mt-1">
-                                {item.condicoes}
+                      {proposta.itens.map((item, idx) => {
+                        const localized = getLocalizedCatalogItem(
+                          {
+                            id: item.catalogoId,
+                            nome: item.nome,
+                            descricao: item.descricao,
+                            condicoes: item.condicoes,
+                            unidade: item.unidade,
+                          },
+                          language,
+                          item.quantidade
+                        );
+                        return (
+                          <tr
+                            key={idx}
+                            className={`transition-colors ${
+                              darkMode ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'
+                            }`}
+                          >
+                            <td className="py-4 px-4 align-top">
+                              <span className="font-bold block">{localized.nome}</span>
+                              <span
+                                className={`text-xs mt-0.5 block leading-relaxed ${
+                                  darkMode ? 'text-slate-400' : 'text-slate-600'
+                                }`}
+                              >
+                                {localized.descricao}
                               </span>
-                            )}
-                          </td>
-                          <td className="py-4 px-3 align-top text-center font-mono text-xs text-slate-400 uppercase">
-                            {item.unidade}
-                          </td>
-                          <td className="py-4 px-3 align-top text-center font-bold font-mono">
-                            {item.quantidade}
-                          </td>
-                          <td className="py-4 px-4 align-top text-right font-mono">
-                            {formatEuro(item.precoUnitarioCentimos)}
-                          </td>
-                          <td className="py-4 px-4 align-top text-right font-mono font-bold">
-                            {formatEuro(item.subtotalCentimos)}
-                          </td>
-                        </tr>
-                      ))}
+                              {localized.condicoes && (
+                                <span className="text-[11px] text-slate-400 italic block mt-1">
+                                  {localized.condicoes}
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-4 px-3 align-top text-center font-mono text-xs text-slate-400 uppercase">
+                              {localized.unidade}
+                            </td>
+                            <td className="py-4 px-3 align-top text-center font-bold font-mono">
+                              {item.quantidade}
+                            </td>
+                            <td className="py-4 px-4 align-top text-right font-mono">
+                              {formatEuro(item.precoUnitarioCentimos)}
+                            </td>
+                            <td className="py-4 px-4 align-top text-right font-mono font-bold">
+                              {formatEuro(item.subtotalCentimos)}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -424,7 +442,11 @@ export const ProposalView: React.FC<ProposalViewProps> = ({
                   <strong className="block text-slate-300 font-bold uppercase tracking-wider">
                     {language === 'pt' ? 'Condições Comerciais e Garantia:' : 'Commercial Terms & Warranty:'}
                   </strong>
-                  <p>{proposta.condicoes}</p>
+                  <p>
+                    {language === 'pt'
+                      ? proposta.condicoes
+                      : 'All listed prices exclude VAT and are valid for 15 days from issue date. Software and audit services are scheduled after confirmation. Hardware items include official 2-year warranty.'}
+                  </p>
                 </div>
 
                 {/* Contactos do Negócio */}

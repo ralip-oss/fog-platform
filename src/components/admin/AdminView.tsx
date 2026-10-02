@@ -28,8 +28,14 @@ import {
   Check,
   Sun,
   Moon,
+  XCircle,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import {
+  getLocalizedCatalogItem,
+  getLocalizedAIText,
+  getLocalizedUnit,
+} from '../../utils/catalogLocalization';
 
 interface PedidoAdmin {
   id: string;
@@ -50,6 +56,7 @@ interface PedidoAdmin {
     estadoNotificacao: string;
     linkAcesso: string;
     token: string;
+    itens?: any[];
   } | null;
 }
 
@@ -92,6 +99,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Manual Resolution state
+  const [showManualEditor, setShowManualEditor] = useState(false);
   const [manualItems, setManualItems] = useState<{ catalogoId: string; quantidade: number }[]>([]);
   const [manualResumo, setManualResumo] = useState('');
 
@@ -229,11 +237,16 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || 'Falha ao reenviar notificação.');
+      if (!res.ok) throw new Error(data.error || (language === 'pt' ? 'Falha ao reenviar notificação.' : 'Failed to resend notification.'));
 
       setActionMessage({
         type: 'success',
-        text: `Notificação enviada ao aluno! Estado: ${data.resultado?.estado || 'aceite'}`,
+        text:
+          language === 'pt'
+            ? `Notificação enviada ao aluno! Estado: ${data.resultado?.estado || 'aceite'}`
+            : `Notification sent to student! Status: ${
+                data.resultado?.estado === 'aceite' ? 'accepted' : data.resultado?.estado || 'accepted'
+              }`,
       });
       await fetchAdminData();
     } catch (err: any) {
@@ -246,7 +259,11 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
   const handleSalvarResolucaoManual = async () => {
     if (!selectedPedido) return;
     if (manualItems.length === 0) {
-      alert('Adicione pelo menos um item do catálogo para a proposta.');
+      alert(
+        language === 'pt'
+          ? 'Adicione pelo menos um item do catálogo para a proposta.'
+          : 'Please add at least one catalog item for the proposal.'
+      );
       return;
     }
 
@@ -269,11 +286,56 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao calcular proposta manual.');
 
-      setActionMessage({ type: 'success', text: 'Proposta calculada e aprovada com sucesso!' });
+      setActionMessage({
+        type: 'success',
+        text: language === 'pt' ? 'Proposta calculada e aprovada com sucesso!' : 'Proposal calculated and approved successfully!',
+      });
       await fetchAdminData();
       setSelectedPedido(data.pedido);
+      setShowManualEditor(false);
     } catch (err: any) {
       setActionMessage({ type: 'error', text: err.message });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleAlterarEstadoPedido = async (pedidoId: string, novoEstado: string, motivo?: string) => {
+    setActionLoading(true);
+    setActionMessage(null);
+    try {
+      const token = await getAuthToken();
+      const res = await fetch(`/api/admin/pedidos/${pedidoId}/estado`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          estadoProcessamento: novoEstado,
+          motivoRevisao: motivo || undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao alterar estado do pedido.');
+
+      setActionMessage({
+        type: 'success',
+        text: language === 'pt' ? 'Estado atualizado com sucesso!' : 'Status updated successfully!',
+      });
+      await fetchAdminData();
+      if (selectedPedido && selectedPedido.id === pedidoId) {
+        setSelectedPedido(data.pedido);
+        if (novoEstado === 'necessita_revisao') {
+          setShowManualEditor(true);
+        }
+      }
+    } catch (err: any) {
+      setActionMessage({
+        type: 'error',
+        text: err.message || (language === 'pt' ? 'Erro ao atualizar estado.' : 'Error updating status.'),
+      });
     } finally {
       setActionLoading(false);
     }
@@ -337,6 +399,18 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-500 border border-sky-500/30">
             <CheckCircle2 className="w-3 h-3" /> {language === 'pt' ? 'Proposta Criada' : 'Proposal Created'}
+          </span>
+        );
+      case 'aceite':
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            <CheckCircle2 className="w-3 h-3" /> {language === 'pt' ? 'Aceite' : 'Accepted'}
+          </span>
+        );
+      case 'rejeitado':
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
+            <XCircle className="w-3 h-3" /> {language === 'pt' ? 'Rejeitado' : 'Rejected'}
           </span>
         );
       case 'necessita_revisao':
@@ -687,6 +761,8 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                     { id: 'em_analise', label: language === 'pt' ? 'Em Análise' : 'In Analysis' },
                     { id: 'necessita_revisao', label: language === 'pt' ? 'Necessita de Revisão' : 'Needs Review' },
                     { id: 'proposta_criada', label: language === 'pt' ? 'Proposta Criada' : 'Proposal Created' },
+                    { id: 'aceite', label: language === 'pt' ? 'Aceite' : 'Accepted' },
+                    { id: 'rejeitado', label: language === 'pt' ? 'Rejeitado' : 'Rejected' },
                     { id: 'erro', label: language === 'pt' ? 'Erro' : 'Error' },
                   ].map((f) => (
                     <button
@@ -765,11 +841,31 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                               </td>
                               <td className="py-3.5 px-4 max-w-xs">
                                 <p className="truncate text-xs text-slate-300">
-                                  {pedido.interpretacaoIA?.resumo || pedido.pedidoTexto}
+                                  {getLocalizedAIText(pedido.interpretacaoIA?.resumo || pedido.pedidoTexto, language)}
                                 </p>
                               </td>
                               <td className="py-3.5 px-3 text-center whitespace-nowrap">
-                                {getStatusBadge(pedido.estadoProcessamento)}
+                                <div className="inline-flex flex-col items-center gap-1">
+                                  {getStatusBadge(pedido.estadoProcessamento)}
+                                  <select
+                                    value={pedido.estadoProcessamento}
+                                    onChange={(e) => handleAlterarEstadoPedido(pedido.id, e.target.value)}
+                                    disabled={actionLoading}
+                                    className={`text-[10px] py-0.5 px-1.5 rounded border font-semibold cursor-pointer ${
+                                      darkMode
+                                        ? 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white'
+                                        : 'bg-white border-slate-300 text-slate-700 hover:text-black'
+                                    }`}
+                                    title={language === 'pt' ? 'Alterar estado diretamente' : 'Change status directly'}
+                                  >
+                                    <option value="necessita_revisao">{language === 'pt' ? 'Revisão' : 'Review'}</option>
+                                    <option value="proposta_criada">{language === 'pt' ? 'Proposta Criada' : 'Proposal'}</option>
+                                    <option value="aceite">{language === 'pt' ? 'Aceite' : 'Accepted'}</option>
+                                    <option value="em_analise">{language === 'pt' ? 'Em Análise' : 'In Analysis'}</option>
+                                    <option value="recebido">{language === 'pt' ? 'Recebido' : 'Received'}</option>
+                                    <option value="rejeitado">{language === 'pt' ? 'Rejeitado' : 'Rejected'}</option>
+                                  </select>
+                                </div>
                               </td>
                               <td className="py-3.5 px-4 text-right font-mono font-bold text-emerald-400 whitespace-nowrap">
                                 {formatEuro(pedido.proposta?.totalCentimos)}
@@ -783,6 +879,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                                     onClick={() => {
                                       setSelectedPedido(pedido);
                                       setActionMessage(null);
+                                      setShowManualEditor(false);
                                       setManualItems([]);
                                       setManualResumo(pedido.interpretacaoIA?.resumo || '');
                                     }}
@@ -790,6 +887,29 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                                     title={language === 'pt' ? 'Ver detalhes e processamento' : 'View details and processing'}
                                   >
                                     <Eye className="w-4 h-4" />
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      setSelectedPedido(pedido);
+                                      setActionMessage(null);
+                                      setShowManualEditor(true);
+                                      if (pedido.proposta?.itens && pedido.proposta.itens.length > 0) {
+                                        setManualItems(
+                                          pedido.proposta.itens.map((it: any) => ({
+                                            catalogoId: it.catalogoId,
+                                            quantidade: it.quantidade,
+                                          }))
+                                        );
+                                      } else {
+                                        setManualItems([]);
+                                      }
+                                      setManualResumo(pedido.interpretacaoIA?.resumo || '');
+                                    }}
+                                    className="p-1.5 rounded-lg bg-amber-950/80 border border-amber-800 text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                                    title={language === 'pt' ? 'Editar estado e itens da proposta' : 'Edit status and proposal items'}
+                                  >
+                                    <Edit2 className="w-4 h-4" />
                                   </button>
 
                                   {pedido.proposta?.token && (
@@ -870,29 +990,31 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800">
-                        {catalogo.map((item) => (
-                          <tr
-                            key={item.id}
-                            className={`transition-colors ${
-                              item.ativo
-                                ? darkMode
-                                  ? 'hover:bg-slate-800/40'
-                                  : 'hover:bg-slate-50'
-                                : 'opacity-60 bg-slate-950/20'
-                            }`}
-                          >
-                            <td className="py-3.5 px-4 font-mono font-bold text-sky-400">
-                              {item.id}
-                            </td>
-                            <td className="py-3.5 px-4 max-w-sm">
-                              <span className="font-bold block text-sm">{item.nome}</span>
-                              <span className="text-xs text-slate-400 block mt-0.5">
-                                {item.descricao}
-                              </span>
-                            </td>
-                            <td className="py-3.5 px-3 text-center font-mono text-xs uppercase text-slate-400">
-                              {item.unidade}
-                            </td>
+                        {catalogo.map((item) => {
+                          const loc = getLocalizedCatalogItem(item, language);
+                          return (
+                            <tr
+                              key={item.id}
+                              className={`transition-colors ${
+                                item.ativo
+                                  ? darkMode
+                                    ? 'hover:bg-slate-800/40'
+                                    : 'hover:bg-slate-50'
+                                  : 'opacity-60 bg-slate-950/20'
+                              }`}
+                            >
+                              <td className="py-3.5 px-4 font-mono font-bold text-sky-400">
+                                {item.id}
+                              </td>
+                              <td className="py-3.5 px-4 max-w-sm">
+                                <span className="font-bold block text-sm">{loc.nome}</span>
+                                <span className="text-xs text-slate-400 block mt-0.5">
+                                  {loc.descricao}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-3 text-center font-mono text-xs uppercase text-slate-400">
+                                {loc.unidade}
+                              </td>
                             <td className="py-3.5 px-4 text-right font-mono font-bold text-emerald-400">
                               {formatEuro(item.precoUnitarioCentimos)}
                             </td>
@@ -921,7 +1043,8 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                               </button>
                             </td>
                           </tr>
-                        ))}
+                        );
+                      })}
                       </tbody>
                     </table>
                   </div>
@@ -976,6 +1099,62 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                 </div>
               )}
 
+              {/* Gestão e Edição do Estado do Pedido pelo Administrador */}
+              <div
+                className={`p-4 rounded-2xl border space-y-3 ${
+                  darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-300'
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                        {language === 'pt' ? 'Estado do Pedido:' : 'Request Status:'}
+                      </span>
+                      {getStatusBadge(selectedPedido.estadoProcessamento)}
+                    </div>
+                    <p className="text-[11px] text-slate-400">
+                      {language === 'pt'
+                        ? 'Altere o estado aqui se aceitou incorretamente ou se pretender colocar em revisão para orçamentação manual.'
+                        : 'Change status here if you wrongly accepted it or wish to put in review for manual quoting.'}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-bold text-slate-300 whitespace-nowrap">
+                      {language === 'pt' ? 'Alterar Estado:' : 'Change Status:'}
+                    </label>
+                    <select
+                      value={selectedPedido.estadoProcessamento}
+                      onChange={(e) => handleAlterarEstadoPedido(selectedPedido.id, e.target.value)}
+                      disabled={actionLoading}
+                      className={`px-3 py-1.5 rounded-xl border text-xs font-bold cursor-pointer transition-colors ${
+                        darkMode ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-black'
+                      }`}
+                    >
+                      <option value="necessita_revisao">
+                        {language === 'pt' ? 'Necessita de Revisão (Permite Correção)' : 'Needs Review (Allows Correction)'}
+                      </option>
+                      <option value="proposta_criada">
+                        {language === 'pt' ? 'Proposta Criada' : 'Proposal Created'}
+                      </option>
+                      <option value="aceite">
+                        {language === 'pt' ? 'Aceite' : 'Accepted'}
+                      </option>
+                      <option value="em_analise">
+                        {language === 'pt' ? 'Em Análise' : 'In Analysis'}
+                      </option>
+                      <option value="recebido">
+                        {language === 'pt' ? 'Recebido' : 'Received'}
+                      </option>
+                      <option value="rejeitado">
+                        {language === 'pt' ? 'Rejeitado' : 'Rejected'}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               {/* Texto Original */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -986,7 +1165,12 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                     darkMode ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                 >
-                  {selectedPedido.pedidoTexto}
+                  {language === 'pt' ? selectedPedido.pedidoTexto : getLocalizedAIText(selectedPedido.pedidoTexto, 'en')}
+                  {language === 'en' && getLocalizedAIText(selectedPedido.pedidoTexto, 'en') !== selectedPedido.pedidoTexto && (
+                    <span className="block mt-2 pt-2 border-t border-slate-800/50 text-[11px] text-slate-400 font-sans italic">
+                      Original (PT): "{selectedPedido.pedidoTexto}"
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -1005,24 +1189,59 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                   >
                     <div>
                       <strong className="text-slate-400">{language === 'pt' ? 'Resumo:' : 'Summary:'}</strong>{' '}
-                      <span>{selectedPedido.interpretacaoIA.resumo}</span>
+                      <span>{getLocalizedAIText(selectedPedido.interpretacaoIA.resumo, language)}</span>
                     </div>
 
                     <div>
                       <strong className="text-slate-400 block mb-1">{language === 'pt' ? 'Itens Mapeados:' : 'Mapped Items:'}</strong>
                       {selectedPedido.interpretacaoIA.itens?.length > 0 ? (
-                        <ul className="list-disc pl-5 space-y-1">
-                          {selectedPedido.interpretacaoIA.itens.map((it: any, i: number) => (
-                            <li key={i}>
-                              <strong className="font-mono text-emerald-400">{it.catalogoId}</strong>{' '}
-                              — {language === 'pt' ? 'Qtd:' : 'Qty:'} {it.quantidade !== null ? it.quantidade : (language === 'pt' ? '(não especificada)' : '(not specified)')}
-                              {it.evidencia && (
-                                <span className="text-slate-400 italic block">
-                                  {language === 'pt' ? 'Evidência:' : 'Evidence:'} "{it.evidencia}"
-                                </span>
-                              )}
-                            </li>
-                          ))}
+                        <ul className="list-disc pl-5 space-y-2">
+                          {selectedPedido.interpretacaoIA.itens.map((it: any, i: number) => {
+                            const catItem = catalogo.find(
+                              (c) => c.id.toLowerCase() === (it.catalogoId || '').toLowerCase()
+                            );
+                            const loc = getLocalizedCatalogItem(
+                              {
+                                id: it.catalogoId,
+                                nome: catItem?.nome || it.catalogoId,
+                                descricao: catItem?.descricao,
+                                condicoes: catItem?.condicoes,
+                                unidade: catItem?.unidade,
+                              },
+                              language,
+                              it.quantidade || 1
+                            );
+                            return (
+                              <li key={i} className="py-0.5">
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <strong className="text-sky-400 font-bold">{loc.nome}</strong>
+                                  <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
+                                    {it.catalogoId}
+                                  </span>
+                                  <span className="text-slate-300">
+                                    — {language === 'pt' ? 'Qtd:' : 'Qty:'}{' '}
+                                    <strong className="font-mono text-emerald-400">
+                                      {it.quantidade !== null
+                                        ? `${it.quantidade} ${loc.unidade}`
+                                        : language === 'pt'
+                                        ? '(não especificada)'
+                                        : '(not specified)'}
+                                    </strong>
+                                  </span>
+                                </div>
+                                {loc.descricao && (
+                                  <span className="text-[11px] text-slate-400 block mt-0.5">
+                                    {loc.descricao}
+                                  </span>
+                                )}
+                                {it.evidencia && (
+                                  <span className="text-slate-400 italic block mt-0.5">
+                                    {language === 'pt' ? 'Evidência:' : 'Evidence:'} "{getLocalizedAIText(it.evidencia, language)}"
+                                  </span>
+                                )}
+                              </li>
+                            );
+                          })}
                         </ul>
                       ) : (
                         <span className="text-slate-500 italic">
@@ -1036,7 +1255,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                         <strong>{language === 'pt' ? 'Informação em falta:' : 'Missing information:'}</strong>
                         <ul className="list-disc pl-5 space-y-0.5 mt-1">
                           {selectedPedido.interpretacaoIA.informacaoEmFalta.map((info: string, i: number) => (
-                            <li key={i}>{info}</li>
+                            <li key={i}>{getLocalizedAIText(info, language)}</li>
                           ))}
                         </ul>
                       </div>
@@ -1045,7 +1264,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                     {selectedPedido.interpretacaoIA.motivoRevisao && (
                       <div className="text-amber-400">
                         <strong>{language === 'pt' ? 'Motivo de Revisão:' : 'Review Reason:'}</strong>{' '}
-                        <span>{selectedPedido.interpretacaoIA.motivoRevisao}</span>
+                        <span>{getLocalizedAIText(selectedPedido.interpretacaoIA.motivoRevisao, language)}</span>
                       </div>
                     )}
                   </div>
@@ -1061,7 +1280,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                     darkMode ? 'bg-emerald-950/20 border-emerald-800/50' : 'bg-emerald-50 border-emerald-200'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <span className="text-xs text-emerald-400 font-bold block">
                         {language === 'pt' ? 'Proposta Emitida:' : 'Issued Proposal:'} {selectedPedido.proposta.numeroProposta}
@@ -1071,7 +1290,38 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setShowManualEditor(true);
+                          if (selectedPedido.proposta?.itens && selectedPedido.proposta.itens.length > 0) {
+                            setManualItems(
+                              selectedPedido.proposta.itens.map((it: any) => ({
+                                catalogoId: it.catalogoId,
+                                quantidade: it.quantidade,
+                              }))
+                            );
+                          } else if (
+                            selectedPedido.interpretacaoIA?.itens &&
+                            selectedPedido.interpretacaoIA.itens.length > 0
+                          ) {
+                            setManualItems(
+                              selectedPedido.interpretacaoIA.itens
+                                .filter((it: any) => it.quantidade && it.quantidade > 0)
+                                .map((it: any) => ({
+                                  catalogoId: it.catalogoId,
+                                  quantidade: it.quantidade || 1,
+                                }))
+                            );
+                          }
+                        }}
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        title={language === 'pt' ? 'Corrigir ou ajustar itens da proposta' : 'Correct or adjust proposal items'}
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                        <span>{language === 'pt' ? 'Corrigir / Ajustar Itens' : 'Correct / Adjust Items'}</span>
+                      </button>
+
                       <a
                         href={`/proposta/${selectedPedido.proposta.token}`}
                         target="_blank"
@@ -1095,17 +1345,27 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                 </div>
               )}
 
-              {/* Ferramenta de Resolução Manual para Pedidos em Revisão */}
-              {selectedPedido.estadoProcessamento === 'necessita_revisao' && (
+              {/* Ferramenta de Resolução Manual / Ajuste para Pedidos */}
+              {(selectedPedido.estadoProcessamento === 'necessita_revisao' || showManualEditor) && (
                 <div
                   className={`p-5 rounded-2xl border space-y-4 ${
                     darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-300'
                   }`}
                 >
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
-                    <Edit2 className="w-4 h-4" />
-                    <span>{language === 'pt' ? 'Resolver Pedido em Revisão (Orçamento Manual)' : 'Resolve Request in Review (Manual Quote)'}</span>
-                  </h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                      <Edit2 className="w-4 h-4" />
+                      <span>{language === 'pt' ? 'Resolver / Ajustar Proposta (Orçamento Manual)' : 'Resolve / Adjust Proposal (Manual Quote)'}</span>
+                    </h4>
+                    {showManualEditor && selectedPedido.estadoProcessamento !== 'necessita_revisao' && (
+                      <button
+                        onClick={() => setShowManualEditor(false)}
+                        className="text-xs text-slate-400 hover:text-white"
+                      >
+                        {language === 'pt' ? 'Cancelar Edição' : 'Cancel Edit'}
+                      </button>
+                    )}
+                  </div>
 
                   <div className="space-y-3">
                     <p className="text-xs text-slate-400">
@@ -1117,6 +1377,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                     <div className="space-y-2">
                       {catalogo.filter((c) => c.ativo).map((item) => {
                         const selecionado = manualItems.find((m) => m.catalogoId === item.id);
+                        const loc = getLocalizedCatalogItem(item, language, selecionado?.quantidade || 1);
                         return (
                           <div
                             key={item.id}
@@ -1126,10 +1387,11 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                                 : 'bg-slate-900 border-slate-800 text-slate-300'
                             }`}
                           >
-                            <div>
-                              <strong className="block text-sm">{item.nome}</strong>
+                            <div className="max-w-md pr-2">
+                              <strong className="block text-sm">{loc.nome}</strong>
+                              <span className="text-xs text-slate-400 block line-clamp-1">{loc.descricao}</span>
                               <span className="font-mono text-emerald-400">
-                                {formatEuro(item.precoUnitarioCentimos)} / {item.unidade}
+                                {formatEuro(item.precoUnitarioCentimos)} / {loc.unidade}
                               </span>
                             </div>
 
@@ -1157,7 +1419,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                                         prev.filter((m) => m.catalogoId !== item.id)
                                       )
                                     }
-                                    className="p-1 rounded text-rose-400 hover:text-rose-300"
+                                    className="p-1 rounded text-rose-400 hover:text-rose-300 cursor-pointer"
                                   >
                                     <X className="w-4 h-4" />
                                   </button>
@@ -1170,7 +1432,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                                       { catalogoId: item.id, quantidade: 1 },
                                     ])
                                   }
-                                  className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold"
+                                  className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
                                 >
                                   {language === 'pt' ? '+ Incluir' : '+ Include'}
                                 </button>
@@ -1187,7 +1449,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                         disabled={actionLoading || manualItems.length === 0}
                         className="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white cursor-pointer shadow-md"
                       >
-                        {actionLoading ? (language === 'pt' ? 'A calcular...' : 'Calculating...') : (language === 'pt' ? 'Calcular e Aprovar Proposta' : 'Calculate & Approve Proposal')}
+                        {actionLoading ? (language === 'pt' ? 'A calcular...' : 'Calculating...') : (language === 'pt' ? 'Calcular e Salvar Proposta' : 'Calculate & Save Proposal')}
                       </button>
                     </div>
                   </div>

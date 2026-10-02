@@ -280,6 +280,7 @@ async function startServer() {
                 estadoNotificacao: proposta.estadoNotificacao,
                 linkAcesso: proposta.linkAcesso,
                 token: proposta.token,
+                itens: proposta.itens || [],
               }
             : null,
         };
@@ -435,6 +436,76 @@ async function startServer() {
     } catch (err: any) {
       console.error('[API Admin] Erro ao recalcular proposta manualmente:', err);
       res.status(500).json({ error: err.message || 'Erro ao recalcular proposta.' });
+    }
+  });
+
+  /**
+   * Alterar o estado de um pedido / proposta pelo administrador
+   */
+  app.patch('/api/admin/pedidos/:id/estado', requireAdminAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const { estadoProcessamento, motivoRevisao } = req.body;
+      const pedido = await getPedido(req.params.id);
+
+      if (!pedido) {
+        res.status(404).json({ error: 'Pedido não encontrado.' });
+        return;
+      }
+
+      const estadosValidos = [
+        'necessita_revisao',
+        'proposta_criada',
+        'aceite',
+        'em_analise',
+        'rejeitado',
+        'recebido',
+        'erro',
+      ];
+      if (!estadosValidos.includes(estadoProcessamento)) {
+        res.status(400).json({ error: 'Estado de processamento inválido.' });
+        return;
+      }
+
+      const updates: any = {
+        estadoProcessamento,
+      };
+
+      if (motivoRevisao !== undefined) {
+        updates.motivoRevisao = motivoRevisao;
+      }
+
+      // Se o administrador colocar novamente em revisão manual
+      if (estadoProcessamento === 'necessita_revisao') {
+        updates.necessitaRevisao = true;
+        if (pedido.interpretacaoIA) {
+          updates.interpretacaoIA = {
+            ...pedido.interpretacaoIA,
+            necessitaRevisao: true,
+            motivoRevisao:
+              motivoRevisao ||
+              pedido.interpretacaoIA.motivoRevisao ||
+              'Colocado em revisão manual pelo administrador para correção.',
+          };
+        }
+      }
+
+      await updatePedido(pedido.id, updates);
+      const pedidoAtualizado = await getPedido(pedido.id);
+
+      // Obter proposta associada se existir
+      const propostas = await listPropostas();
+      const proposta = propostas.find((p) => p.pedidoId === pedido.id) || null;
+
+      res.json({
+        success: true,
+        pedido: {
+          ...pedidoAtualizado,
+          proposta,
+        },
+      });
+    } catch (err: any) {
+      console.error('[API Admin] Erro ao alterar estado do pedido:', err);
+      res.status(500).json({ error: err.message || 'Erro ao alterar estado do pedido.' });
     }
   });
 
