@@ -35,6 +35,7 @@ import {
   getLocalizedCatalogItem,
   getLocalizedAIText,
   getLocalizedUnit,
+  getLocalizedPastRequestText,
 } from '../../utils/catalogLocalization';
 
 interface PedidoAdmin {
@@ -864,7 +865,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                               </td>
                               <td className="py-3.5 px-4 max-w-xs">
                                 <p className="truncate text-xs text-slate-300">
-                                  {getLocalizedAIText(pedido.interpretacaoIA?.resumo || pedido.pedidoTexto, language)}
+                                  {getLocalizedPastRequestText(pedido.interpretacaoIA?.resumo || pedido.pedidoTexto, language)}
                                 </p>
                               </td>
                               <td className="py-3.5 px-3 text-center whitespace-nowrap">
@@ -1188,8 +1189,8 @@ export const AdminView: React.FC<AdminViewProps> = ({ darkMode, setDarkMode, onB
                     darkMode ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                 >
-                  {language === 'pt' ? selectedPedido.pedidoTexto : getLocalizedAIText(selectedPedido.pedidoTexto, 'en')}
-                  {language === 'en' && getLocalizedAIText(selectedPedido.pedidoTexto, 'en') !== selectedPedido.pedidoTexto && (
+                  {getLocalizedPastRequestText(selectedPedido.pedidoTexto, language)}
+                  {language === 'en' && getLocalizedPastRequestText(selectedPedido.pedidoTexto, 'en') !== selectedPedido.pedidoTexto && (
                     <span className="block mt-2 pt-2 border-t border-slate-800/50 text-[11px] text-slate-400 font-sans italic">
                       Original (PT): "{selectedPedido.pedidoTexto}"
                     </span>

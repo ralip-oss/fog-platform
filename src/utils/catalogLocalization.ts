@@ -1078,6 +1078,34 @@ export function getLocalizedAIText(text: string | undefined | null, lang: 'pt' |
       /\buma\b/gi,
       'one',
     ],
+    [
+      /\bquero\b/gi,
+      'I want',
+    ],
+    [
+      /\bpreciso\b/gi,
+      'I need',
+    ],
+    [
+      /\bprecisamos\b/gi,
+      'we need',
+    ],
+    [
+      /\bpretendemos\b/gi,
+      'we intend to get',
+    ],
+    [
+      /\bpretendo\b/gi,
+      'I intend to get',
+    ],
+    [
+      /\bainda não sabemos\b/gi,
+      'we do not know yet',
+    ],
+    [
+      /\bquantidade exata\b/gi,
+      'exact quantity',
+    ],
   ];
 
   let translated = text;
@@ -1086,4 +1114,105 @@ export function getLocalizedAIText(text: string | undefined | null, lang: 'pt' |
   }
 
   return translated;
+}
+
+/**
+ * Dicionário e função dedicada à tradução rigorosa de pedidos anteriores de proposta (PT <-> EN).
+ */
+export function getLocalizedPastRequestText(
+  pedidoTexto: string | { pt: string; en: string } | undefined | null,
+  lang: 'pt' | 'en'
+): string {
+  if (!pedidoTexto) return '';
+
+  if (typeof pedidoTexto === 'object' && pedidoTexto !== null) {
+    return lang === 'pt' ? pedidoTexto.pt : pedidoTexto.en;
+  }
+
+  const raw = String(pedidoTexto).trim();
+  if (!raw) return '';
+
+  if (lang === 'pt') {
+    const enToPtMap: Record<string, string> = {
+      'i want 1 free game': 'quero 1 jogo grátis',
+      'i want one free game': 'quero um jogo grátis',
+      'we intend to acquire fog deck oled consoles and fogworks licenses but we do not know the exact quantity yet':
+        'Pretendemos consolas Fog Deck OLED e licenças Fogworks mas ainda não sabemos a quantidade exata.',
+      'we would like to order 2 fog deck oled consoles and 1 fog deck verified technical certification':
+        'Gostaríamos de encomendar 2 consolas Fog Deck OLED e 1 certificação técnica Fog Deck Verified.',
+      'we would like to order 2 fog deck oled consoles with fog verified technical audit for each, and include 3 months of dedicated studio support':
+        'Gostaríamos de encomendar 2 consolas Fog Deck OLED com auditoria técnica Fog Verified para cada uma, e incluir 3 meses de suporte dedicado a estúdios.',
+      'independent game publishing on the fog store with fog guard anti-cheat integration, fogworks achievements, and cloud saves':
+        'Publicação de jogo independente na Fog Store com integração de Fog Guard anti-cheat, conquistas Fogworks e salvamento em nuvem.',
+      'acquisition of 5 fog station pro units for qa testing team and 20 hours of technical consulting for shader compatibility':
+        'Aquisição de 5 estações Fog Station Pro para equipa de testes de qualidade e 20 horas de consultoria técnica para compatibilidade de shaders.',
+      'fog partner publishing package with editorial spotlight on launch week and technical performance audit for controller certification':
+        'Pacote Fog Partner Publishing com destaque editorial na semana de lançamento e auditoria técnica de desempenho para certificação de comandos.',
+      'submission of new rpg title for the fog catalog with compatibility verification for 90hz oled displays and fog controller support':
+        'Submissão de novo título RPG para o catálogo Fog com verificação de compatibilidade para ecrãs OLED a 90Hz e suporte para comandos Fog Controller.',
+    };
+
+    const key = raw.toLowerCase().replace(/\.$/, '').trim();
+    for (const [enKey, ptVal] of Object.entries(enToPtMap)) {
+      if (enKey.replace(/\.$/, '').trim() === key) {
+        return ptVal;
+      }
+    }
+    return raw;
+  }
+
+  // lang === 'en'
+  const ptToEnMap: Record<string, string> = {
+    'quero 1 jogo grátis': 'I want 1 free game',
+    'quero 1 jogo grátis.': 'I want 1 free game.',
+    'quero 1 jogo gratuito': 'I want 1 free game',
+    'quero 1 jogo gratuito.': 'I want 1 free game.',
+    'quero um jogo grátis': 'I want one free game',
+    'quero um jogo gratuito': 'I want one free game',
+    'Pretendemos consolas Fog Deck OLED e licenças Fogworks mas ainda não sabemos a quantidade exata.':
+      'We intend to acquire Fog Deck OLED consoles and Fogworks licenses but we do not know the exact quantity yet.',
+    'Pretendemos consolas Fog Deck OLED e licenças Fogworks mas ainda não sabemos a quantidade exata':
+      'We intend to acquire Fog Deck OLED consoles and Fogworks licenses but we do not know the exact quantity yet.',
+    'Gostaríamos de encomendar 2 consolas Fog Deck OLED e 1 certificação técnica Fog Deck Verified.':
+      'We would like to order 2 Fog Deck OLED consoles and 1 Fog Deck Verified technical certification.',
+    'Gostaríamos de encomendar 2 consolas Fog Deck OLED e 1 certificação técnica Fog Deck Verified':
+      'We would like to order 2 Fog Deck OLED consoles and 1 Fog Deck Verified technical certification.',
+    'Gostaríamos de encomendar 2 consolas Fog Deck OLED com auditoria técnica Fog Verified para cada uma, e incluir 3 meses de suporte dedicado a estúdios.':
+      'We would like to order 2 Fog Deck OLED consoles with Fog Verified technical audit for each, and include 3 months of dedicated studio support.',
+    'Gostaríamos de encomendar 2 consolas Fog Deck OLED com auditoria técnica Fog Verified para cada uma, e incluir 3 meses de suporte dedicado a estúdios':
+      'We would like to order 2 Fog Deck OLED consoles with Fog Verified technical audit for each, and include 3 months of dedicated studio support.',
+    'Gostaríamos de encomendar 2 consolas Fog Deck OLED com auditoria técnica Fog Verified para cada um, e incluir 3 meses de suporte dedicado a estúdios.':
+      'We would like to order 2 Fog Deck OLED consoles with Fog Verified technical audit for each, and include 3 months of dedicated studio support.',
+    'Gostaríamos de encomendar 2 consolas Fog Deck OLED com auditoria técnica Fog Verified para cada um, e incluir 3 meses de suporte dedicado a estúdios':
+      'We would like to order 2 Fog Deck OLED consoles with Fog Verified technical audit for each, and include 3 months of dedicated studio support.',
+    'Publicação de jogo independente na Fog Store com integração de Fog Guard anti-cheat, conquistas Fogworks e salvamento em nuvem.':
+      'Independent game publishing on the Fog Store with Fog Guard anti-cheat integration, Fogworks achievements, and cloud saves.',
+    'Publicação de jogo independente na Fog Store com integração de Fog Guard anti-cheat, conquistas Fogworks e salvamento em nuvem':
+      'Independent game publishing on the Fog Store with Fog Guard anti-cheat integration, Fogworks achievements, and cloud saves.',
+    'Publicação de jogo independente na Fog Store com integração de Fog Guard anti-cheat, conquistas Fogworks e salvamento na nuvem.':
+      'Independent game publishing on the Fog Store with Fog Guard anti-cheat integration, Fogworks achievements, and cloud saves.',
+    'Publicação de jogo independente na Fog Store com integração de Fog Guard anti-cheat, conquistas Fogworks e salvamento na nuvem':
+      'Independent game publishing on the Fog Store with Fog Guard anti-cheat integration, Fogworks achievements, and cloud saves.',
+    'Aquisição de 5 estações Fog Station Pro para equipa de testes de qualidade e 20 horas de consultoria técnica para compatibilidade de shaders.':
+      'Acquisition of 5 Fog Station Pro units for QA testing team and 20 hours of technical consulting for shader compatibility.',
+    'Aquisição de 5 estações Fog Station Pro para equipa de testes de qualidade e 20 horas de consultoria técnica para compatibilidade de shaders':
+      'Acquisition of 5 Fog Station Pro units for QA testing team and 20 hours of technical consulting for shader compatibility.',
+    'Pacote Fog Partner Publishing com destaque editorial na semana de lançamento e auditoria técnica de desempenho para certificação de comandos.':
+      'Fog Partner Publishing package with editorial spotlight on launch week and technical performance audit for controller certification.',
+    'Pacote Fog Partner Publishing com destaque editorial na semana de lançamento e auditoria técnica de desempenho para certificação de comandos':
+      'Fog Partner Publishing package with editorial spotlight on launch week and technical performance audit for controller certification.',
+    'Submissão de novo título RPG para o catálogo Fog com verificação de compatibilidade para ecrãs OLED a 90Hz e suporte para comandos Fog Controller.':
+      'Submission of new RPG title for the Fog catalog with compatibility verification for 90Hz OLED displays and Fog Controller support.',
+    'Submissão de novo título RPG para o catálogo Fog com verificação de compatibilidade para ecrãs OLED a 90Hz e suporte para comandos Fog Controller':
+      'Submission of new RPG title for the Fog catalog with compatibility verification for 90Hz OLED displays and Fog Controller support.',
+  };
+
+  const keyPt = raw.toLowerCase().replace(/\.$/, '').trim();
+  for (const [ptKey, enVal] of Object.entries(ptToEnMap)) {
+    if (ptKey.toLowerCase().replace(/\.$/, '').trim() === keyPt) {
+      return enVal;
+    }
+  }
+
+  return getLocalizedAIText(raw, 'en');
 }

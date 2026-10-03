@@ -13,6 +13,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { getLocalizedPastRequestText } from '../../utils/catalogLocalization';
 
 interface ProposalRequestSectionProps {
   darkMode: boolean;
@@ -184,11 +185,7 @@ export const ProposalRequestSection: React.FC<ProposalRequestSectionProps> = ({
 
   const currentExemplo = combinedExemplos[currentIndex] || combinedExemplos[0];
   const currentExemploText = currentExemplo
-    ? typeof currentExemplo.pedidoTexto === 'string'
-      ? currentExemplo.pedidoTexto
-      : language === 'pt'
-      ? currentExemplo.pedidoTexto.pt
-      : currentExemplo.pedidoTexto.en
+    ? getLocalizedPastRequestText(currentExemplo.pedidoTexto, language)
     : '';
 
   const renderStatusBadge = (estado: string) => {
